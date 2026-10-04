@@ -460,26 +460,14 @@ const baseSlides: SlideDef[] = [
       "Even with many agents, someone has to read what comes out. The part no agent does for me: I read every diff. Agents produce plausible code that misses edge cases. I check the tests it wrote, because agents sometimes weaken the assertion to make a test pass. And I press merge. Verification is the best lever I know: give Claude a way to check its own work, like tests, a build or a screenshot, and ask for evidence and not a claim. Claude Code's team says the same, and in my experience it makes the biggest difference.",
   },
   {
-    id: "close",
-    steps: 4,
-    time: "0:35",
-    render: (s) => (
+    id: "close", time: "0:20",
+    render: () => (
       <Slide>
-        <Swap k={s}>
-          {s < 3 && (
-            <>
-              <H>Three things to try tomorrow</H>
-              <div className="text-[64px] font-bold leading-tight max-w-[1500px]">
-                {["Run /context and see what loads before you type", "Switch to /output-style concise", "Write one skill for something you paste every week"][s]}
-              </div>
-            </>
-          )}
-          {s === 3 && <Title size={112}>Thank you</Title>}
-        </Swap>
+        <Title size={120}>Thank you</Title>
+        <div className="mt-8 font-mono text-[32px] text-neutral-400">Yaroslav Matushevych</div>
       </Slide>
     ),
-    notes:
-      "Three things to try tomorrow. Run slash context and see what loads before you type. Switch to concise and see how much shorter the answers get. And write one skill for something you paste every week, with a description that says when not to use it. These small parts are what you control a software factory with. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the last slide. Questions.",
+    notes: "These small parts are what you control a software factory with: what Claude remembers, how it is steered, which skills it follows, what it holds in context, and which tools it can touch. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the next slide. Questions.",
   },
 ];
 
