@@ -167,19 +167,25 @@ const baseSlides: SlideDef[] = [
   },
   {
     id: "style",
-    steps: 2,
-    time: "0:45",
+    steps: 4,
+    time: "0:50",
     render: (s) => (
-      <Slide chapter="Setup">
-        <H>Make answers shorter with an output style</H>
+      <Slide chapter="Commands">
+        <H>{[
+          "Make answers shorter with an output style",
+          "Default: 420 words, 1,020 output tokens",
+          "Concise: 179 words, 576 output tokens",
+          "My own Terse style: 158 words, 476 output tokens",
+        ][s]}</H>
         <Swap k={s}>
           {s === 0 && <Mono size={80}>/output-style concise</Mono>}
-          {s === 1 && <Code text={terse} size={28} />}
+          {s === 1 && <Term size={26} lines={[L(`$ claude -p "${styleQ}"`, "p"), L(""), ...styleDefault.map((t) => L(t))]} />}
+          {s === 2 && <Term size={26} lines={[L(`$ claude -p "${styleQ}"`, "p"), L(""), ...styleConcise.map((t) => L(t))]} />}
+          {s === 3 && <Term size={26} lines={[L(`$ claude -p "${styleQ}"`, "p"), L(""), ...styleTerse.map((t) => L(t))]} />}
         </Swap>
       </Slide>
     ),
-    notes:
-      "Concise is a built-in output style. It needs version 2.1.237 or later. It puts the answer in the first sentence and drops preamble, step narration and the closing recap. It keeps full detail for errors, failing tests and security warnings. The value in settings is case sensitive, so write Concise with a capital C. Second block is my own custom version. A custom style is a markdown file in the output-styles folder. Keep coding instructions true, or you lose the built-in coding behaviour. It is an instruction, so Claude can still drift. Restart after you edit the file.",
+    notes: "Concise is a built-in output style, from version 2.1.237. It puts the answer first and drops preamble and recap. Here is the same question three times, from real runs on my machine, one run each. The default answer is 420 words. Concise is 179, and my own Terse style is 158. Output tokens drop from 1,020 to 476. Runs vary, so one run is not a benchmark, but the difference is large and it is what I see every day. Select a style with slash output-style, or in settings. A custom style is a markdown file in the output-styles folder. Keep coding instructions true, or you lose the built-in coding behaviour.",
   },
   {
     id: "commands",
@@ -548,6 +554,22 @@ const Two = ({ main, fix }: { main: ReactNode; fix: ReactNode }) => (
 
 const mono = (t: string) => <span className="font-mono text-[#d97757]">{t}</span>;
 
+
+const styleQ = "Why does my React component's useEffect run twice in development?";
+const styleDefault = ["# Why `useEffect` runs twice in development", "", "Your component is probably inside `<React.StrictMode>`. In", "development, StrictMode mounts each component, unmounts it, and", "mounts it again. This is on purpose. It does not occur in", "production builds.", "", "## Why React does this", "", "React wants to find bugs in effects that do not clean up", "correctly. The extra cycle simulates what happens when a …"];
+const styleConcise = ["React 18+ Strict Mode causes this. In development only, React", "mounts each component, unmounts it, and mounts it again. This", "checks that your effects clean up correctly. Production builds run", "the effect once.", "", "**To fix it:** add a cleanup function to the effect that reverses", "what the effect did."];
+const styleTerse = ["React Strict Mode causes this. In development, React mounts each", "component, unmounts it, and mounts it again. This checks that your", "effects clean up correctly. It does not happen in production", "builds.", "", "**What to do:**", "- Do not remove `<StrictMode>`. It finds real bugs.", "- Add a cleanup function to each effect that sets something up."];
+const prsummaryOut = ["## What changed", "`filter()` in `filter.js` now takes a second argument, `saved`. It", "uses the live query `q` first. If `q` is `null` or `undefined`, it", "uses `saved`. If both are missing, it uses an empty string. The", "result is trimmed. I added `demo.js`, which calls", "`filter(undefined, \"SW1A 1AA\")`.", "", "## Why", "After a refresh, the live query is `undefined`. The old code", "called `q.trim()` and threw an error, so the postcode filter …"];
+const prsummaryFile = `---
+name: pr-summary
+description: Draft a pull request description from the current branch diff
+argument-hint: [extra focus]
+disable-model-invocation: true
+---
+Commits: !\`git log --oneline main..HEAD\`
+Diff stat: !\`git diff main...HEAD --stat\`
+Write a PR description: what changed, why, risks, test plan. Max 150 words. Extra focus: $ARGUMENTS`;
+
 const dim = (t: string) => <span className="font-mono text-[28px] font-normal text-neutral-600">  {t}</span>;
 
 const extraSlides: Record<string, SlideDef> = {
@@ -670,26 +692,6 @@ const extraSlides3: Record<string, SlideDef> = {
       </Slide>
     ),
     notes: "First tip: give Claude a way to check its own work. The goal command does it. You state a condition, like all tests in this folder pass and lint is clean, and Claude keeps working until it is true. For a hard guarantee, use a Stop hook: it blocks the turn from ending until your check passes. A hook is code, so it enforces. CLAUDE.md only asks. I ask for evidence in every prompt: run the tests and show me the output.",
-  },
-  "tip-pitfalls": {
-    id: "tip-pitfalls", steps: 5, time: "0:45",
-    render: (s) => (
-      <Slide chapter="Tips">
-        <H>Five mistakes, and what I do instead</H>
-        <Rows
-          size={40}
-          active={s}
-          rows={[
-            <Two key="a" main="Many tasks in one session" fix="Start fresh with /clear" />,
-            <Two key="b" main="Correcting Claude again and again" fix="After two tries, /clear and write a better prompt" />,
-            <Two key="c" main="Telling a reviewer to find problems" fix="It always finds some. Ask only for real bugs." />,
-            <Two key="d" main="Code that looks right" fix="Ask for the test output as proof" />,
-            <Two key="e" main="Skipping permission prompts on a real machine" fix="Use a container or the sandbox" />,
-          ]}
-        />
-      </Slide>
-    ),
-    notes: "Five mistakes I see most. Unrelated tasks in one session: clear between them. Correcting over and over: after two misses, clear and rewrite the prompt. A reviewer told to find gaps always finds some, and you end up adding abstractions you did not need, so tell it to flag only correctness problems. Plausible code that misses edge cases: ask for tests or a screenshot as evidence. And skip permissions only inside a container or the sandbox.",
   },
   "mem-lines": {
     id: "mem-lines", steps: 3, time: "0:45",
@@ -849,6 +851,21 @@ const extraSlides4: Record<string, SlideDef> = {
 
 
 const extraSlides5: Record<string, SlideDef> = {
+  "sk-run": {
+    id: "sk-run", steps: 3, time: "0:50",
+    render: (s) => (
+      <Slide chapter="Skills">
+        <H>{["A real run of my pr-summary skill", "What it wrote", "A limit I set, and what happened"][s]}</H>
+        <Swap k={s}>
+          {s === 0 && <Code text={prsummaryFile} size={28} />}
+          {s === 1 && <Term size={26} lines={[L('$ claude -p "/pr-summary"', "p"), L(""), ...prsummaryOut.map((t) => L(t))]} />}
+          {s === 2 && (<><Big size={190}>197 words</Big><Mono size={36} dim>my skill says: Max 150 words</Mono></>)}
+        </Swap>
+      </Slide>
+    ),
+    notes: "A real run, from a throwaway repo with a branch and three commits. The skill is five lines. It runs git log and git diff stat before Claude sees the prompt, so the commits are already in context. It worked: the summary is accurate, it spots that an empty string will not fall back to the saved value, and it gives a test plan. But I wrote max 150 words in the skill, and it wrote 197. A skill can look fine and still miss a limit you set. A word count is a check you can run, so write it as a test case, and run it more than once.",
+  },
+
   "d-tips": {
     id: "d-tips", time: "0:10",
     render: () => (
@@ -938,10 +955,10 @@ const extraSlides5: Record<string, SlideDef> = {
 
 const order = [
   "hero", "vision",
-  "d-tips", "tip-verify", "tip-pitfalls",
+  "d-tips", "tip-verify",
   "d-memory", "memory", "mem-lines", "mem-pitfalls",
   "d-commands", "modes", "style", "commands",
-  "d-skills", "which", "sk-write", "sk-desc", "sk-issues", "sk-evals",
+  "d-skills", "which", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
   "d-context", "context", "cost", "smart-zone",
   "d-agents", "agent-decision", "live-agent", "bad-tool", "agent-skill", "agent-fail",
   "d-voice", "voice", "bot-flow", "bot-code", "bot-setup", "guardrails",
