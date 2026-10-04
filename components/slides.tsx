@@ -641,7 +641,7 @@ const extraSlides2: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Here is how the voice part works. I dictate a message with my phone keyboard into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows my skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. If you ever build a software factory, this is its smallest version. Check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
+    notes: "Here is how the voice part works. I dictate a message with my phone keyboard into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows my skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. This is my small software factory. Check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
   },
   "bot-code": {
     id: "bot-code", steps: 3, time: "1:15",
