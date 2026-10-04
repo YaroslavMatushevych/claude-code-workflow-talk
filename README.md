@@ -1,6 +1,6 @@
 # Inside My Real Claude Code Workflow
 
-Slides for the talk "Inside My Real Claude Code Workflow" at CityJS Athens 2026. The deck is a Next.js app with a black theme. It has speaker notes, a timer, and deep links to each slide and step. The slides show real terminal output, real skill files, and short code samples. The deck has 38 slides.
+Slides for the talk "Inside My Real Claude Code Workflow" at CityJS Athens 2026. The deck is a Next.js app with a black theme. It has speaker notes, a timer, and deep links to each slide and step. The slides show real terminal output, real skill files, and short code samples. The deck has 36 slides.
 
 ## Run it
 
@@ -66,13 +66,12 @@ Example:
 
 ## Talk structure
 
-1. Tips
-2. Memory
-3. Commands
-4. Skills
-5. Context
-6. Agents
-7. Voice and bot
+1. Memory
+2. Commands
+3. Skills
+4. Context
+5. Agents
+6. Voice and bot
 
 ## Links
 
