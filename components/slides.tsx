@@ -792,9 +792,13 @@ Once done, use /code-review to review the work.
 Commit your work to the current branch.`;
 
 
-const botConfig = `const TOKEN = process.env.TG_TOKEN;
-const ALLOWED = Number(process.env.TG_CHAT_ID);
-const REPO = process.env.REPO_DIR;
+const botConfig = `const { TG_TOKEN: TOKEN, TG_CHAT_ID, REPO_DIR: REPO, DRY_RUN } = process.env;
+const missing = ["TG_TOKEN", "TG_CHAT_ID", "REPO_DIR"].filter((k) => !process.env[k]);
+if (missing.length) {
+  console.error(\`Missing environment variable: \${missing.join(", ")}. See .env.example.\`);
+  process.exit(1);
+}
+const ALLOWED = Number(TG_CHAT_ID);
 
 const api = (method, body) =>
   fetch(\`https://api.telegram.org/bot\${TOKEN}/\${method}\`, {
@@ -805,15 +809,19 @@ const api = (method, body) =>
 
 const botRun = `const run = (task) =>
   new Promise((resolve) => {
-    const p = spawn("claude", [
+    const args = [
       "-p", \`Use the worker agent for this task: \${task}\`,
       "--output-format", "json",
       "--max-budget-usd", "1",
       "--allowedTools", "Read,Edit,Write,Bash(git *),Bash(gh pr *)",
       "--append-system-prompt",
-      "Work on a branch named claude/<slug>. " +
-        "Open a DRAFT pull request. Never push to main.",
-    ], { cwd: REPO, stdio: ["ignore", "pipe", "pipe"] });
+      "Work on a branch named claude/<slug>. Open a DRAFT pull request. Never push to main.",
+    ];
+    if (DRY_RUN) {
+      console.log("claude", JSON.stringify(args));
+      return resolve(\`dry run: \${task}\`);
+    }
+    const p = spawn("claude", args, { cwd: REPO, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
     p.stdout.on("data", (d) => (out += d));
     p.on("close", () => {
@@ -1072,7 +1080,7 @@ const extraSlides2: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Everything from this talk is in four repos on my GitHub. Workflow notes: the written version, with sources and examples, for memory, context, commands, skills, agents and cost. Agent skills: the skills, agents, hooks and CI workflow from the slides, ready to copy. Telegram bot: the 40-line script that turns a chat message into a Claude Code run. Workflow talk: these slides. The skills and the bot are drafts I have not run end to end, and the README in each says so. Thank you, and questions.",
+    notes: "Everything from this talk is in four repos on my GitHub. Workflow notes: the written version, with sources and examples, for memory, context, commands, skills, agents and cost. Agent skills: the skills, agents, hooks and CI workflow from the slides, ready to copy. Telegram bot: the 50-line script that turns a chat message into a Claude Code run. Workflow talk: these slides. The skills and the bot are drafts I have not run end to end, and the README in each says so. Thank you, and questions.",
   },
 
   "sk-levels": {
@@ -1164,7 +1172,7 @@ const extraSlides2: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "The whole bot is about 40 lines, and it is not a framework. Block one: the token, the one chat ID that is allowed to send work, the repo directory, and a small helper for the Telegram API. Block two: the run function. It starts claude with dash p, JSON output, a one-dollar budget cap per message, and a short list of allowed tools. An append-system-prompt line tells it to work on a branch and open a draft PR. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, send back the reply. I have not run this script end to end, so run it once before the talk. The allow list is the only access control, so keep the token secret.",
+    notes: "The whole bot is about 50 lines, and it is not a framework. Block one: the token, the one chat ID that is allowed to send work, the repo directory, a startup check, and a small helper for the Telegram API. Block two: the run function. It starts claude with dash p, JSON output, a one-dollar budget cap per message, and a short list of allowed tools. An append-system-prompt line tells it to work on a branch and open a draft PR. Set dry run to 1 and it prints the command instead of running it, so you can test the Telegram part without any cost. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, send back the reply. I have not run this script end to end, so run it once before the talk. The allow list is the only access control, so keep the token secret.",
   },
   "bot-setup": {
     id: "bot-setup", steps: 4, time: "0:45",
