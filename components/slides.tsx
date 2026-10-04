@@ -335,30 +335,7 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes: "Claude reads two kinds of memory at the start of every session. CLAUDE.md, which I write, and auto-memory, which Claude writes. I will not explain CLAUDE.md, you know it. Auto-memory lives in a folder per project: an index file and one file per fact. This is the index from my setup, 22 files. Each line points to a topic file. The docs say the first 200 lines of MEMORY.md, or the first 25 kilobytes, whichever comes first, load at the start of every conversation. Anything beyond that is not loaded at session start, and Claude keeps the index short by moving details into topic files. Memory is context, not enforcement. If something must happen every time, use a hook.",
-  },
-  {
-    id: "which",
-    steps: 5,
-    time: "0:45",
-    render: (s) => (
-      <Slide chapter="Skills">
-        <H>Where does an instruction belong?</H>
-        <Rows
-          size={46}
-          active={s}
-          rows={[
-            <span key="a">A rule that always applies: {mono("CLAUDE.md")}</span>,
-            <span key="b">A procedure I need sometimes: {mono("skill")}</span>,
-            <span key="c">Something that must happen every time: {mono("hook")}</span>,
-            <span key="d">A noisy side task: {mono("subagent")}</span>,
-            <span key="e">Access to another system: {mono("MCP")}</span>,
-          ]}
-        />
-      </Slide>
-    ),
-    notes:
-      "Where does an instruction go? Rules that always apply, under 200 lines, go in CLAUDE.md. A procedure I need sometimes is a skill. My rule: the third time I paste the same playbook, it becomes a skill. Something that must happen every time, like formatting after an edit, is a hook, because CLAUDE.md is a request and a hook is enforced. A side task that floods the context, like reading logs, goes to a subagent that returns a summary. Access to another system is an MCP server, and a skill can teach Claude how to use it.",
+    notes: "Claude reads two kinds of memory at the start of every session. CLAUDE.md, which I write, and auto-memory, which Claude writes. I will not explain CLAUDE.md. Auto-memory lives in a folder per project: an index file called MEMORY.md and one file per fact. This is the index from my setup. The docs say the first 200 lines of MEMORY.md, or the first 25 kilobytes, load at the start of every conversation. Anything beyond that does not load at session start, so Claude keeps the index short and moves details into topic files.",
   },
   {
     id: "agent-decision",
@@ -384,7 +361,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "live-agent",
     steps: 4,
-    time: "0:50",
+    time: "0:45",
     render: (s) => (
       <Slide chapter="Agents">
         <H>{["Build an agent. Step 1: a tool with a name, a description and inputs", "Step 2: a function that runs the tool", "Step 3: a loop that asks Claude and runs the tool it picks", "Step 4: send the tool result back to Claude"][s]}</H>
@@ -396,7 +373,7 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes: "Now the agent. About 45 lines. I recorded this run beforehand, and the code is on screen in four steps. First, the tool: a name, a description and a schema. That is all Claude ever sees of my code. Second, the function that runs the tool. Third, the loop. Call the model and add its answer to the messages. If it did not ask for a tool, we are done. Fourth, if it asked, run the tool and send back a tool result, as a user message, with the matching id. There is a hard cap of ten turns. I have not run this exact file yet, so I record the output before the talk.",
+    notes: "Now the agent, about 45 lines. I recorded this run beforehand. First, the tool: a name, a description and a schema. That is all Claude ever sees of my code. Second, the function that runs the tool. Third, the loop: call the model and add its answer to the messages. If it did not ask for a tool, we are done. Fourth, if it asked, run the tool and send back a tool result with the matching id. There is a hard cap of ten turns. I record the output before the talk because I have not run this exact file yet.",
   },
   {
     id: "bad-tool",
@@ -447,19 +424,6 @@ const baseSlides: SlideDef[] = [
       "Five guardrails, because this runs while I am away from the laptop. One chat ID can send work, and the bot ignores everyone else. Draft pull requests only. Branch protection on main, because the allowed git commands could push, and the prompt line is only an instruction. Treat messages and tickets as untrusted text. And a budget cap on every run.",
   },
   {
-    id: "judgement",
-    steps: 3,
-    time: "0:45",
-    render: (s) => (
-      <Slide chapter="Judgement">
-        <H>What I still do myself</H>
-        <Rows size={72} active={s} rows={["I read every diff", "I check the tests Claude wrote", "I decide what to merge"]} />
-      </Slide>
-    ),
-    notes:
-      "Even with many agents, someone has to read what comes out. The part no agent does for me: I read every diff. Agents produce plausible code that misses edge cases. I check the tests it wrote, because agents sometimes weaken the assertion to make a test pass. And I press merge. Verification is the best lever I know: give Claude a way to check its own work, like tests, a build or a screenshot, and ask for evidence and not a claim. Claude Code's team says the same, and in my experience it makes the biggest difference.",
-  },
-  {
     id: "close", time: "0:20",
     render: () => (
       <Slide>
@@ -467,7 +431,7 @@ const baseSlides: SlideDef[] = [
         <div className="mt-8 font-mono text-[32px] text-neutral-400">Yaroslav Matushevych</div>
       </Slide>
     ),
-    notes: "These small parts are what you control a software factory with: what Claude remembers, how it is steered, which skills it follows, what it holds in context, and which tools it can touch. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the next slide. Questions.",
+    notes: "Even with many agents, I read every diff, I check the tests Claude wrote, and I decide what to merge. These small parts are what you control a software factory with: what Claude remembers, how it is steered, which skills it follows, what it holds in context, and which tools it can touch. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the next slide. Questions.",
   },
 ];
 
@@ -575,6 +539,11 @@ const tipPipeOut = ["- Whitespace-only `q` (for example `\"  \"`) is not nullish
 const tipToyClaudeMd = "# Project\nAlways use tabs for indentation.\nUse 2-space indentation.\nWrite clean code.\nAlways write tests first.\nNever write tests for trivial functions.\nIMPORTANT: ALWAYS follow ALL rules. NEVER break any rule. IMPORTANT.";
 const tipAuditOut = ["1. Lines 2 and 3 give opposite rules. One says tabs, the", "  other says 2-space indentation. The model cannot obey", "  both.", "2. Line 7 is pressure language. It is all-caps IMPORTANT,", "  ALWAYS, NEVER, and it repeats the other rules."];
 
+
+const tipHookScript = "// PreToolUse hook for Bash. Exit code 2 blocks the command and sends stderr to Claude.\nlet input = \"\";\nprocess.stdin.on(\"data\", (d) => (input += d)).on(\"end\", () => {\n  const command = JSON.parse(input).tool_input?.command ?? \"\";\n  if (/git\\s+commit\\b.*--no-verify/.test(command)) {\n    console.error(\"Blocked: do not skip git hooks. Fix the failing check instead.\");\n    process.exit(2);\n  }\n});";
+const tipHookSettings = "{\n  \"hooks\": {\n    \"PreToolUse\": [\n      {\n        \"matcher\": \"Bash\",\n        \"hooks\": [{ \"type\": \"command\", \"command\": \"node .claude/hooks/block-no-verify.mjs\" }]\n      }\n    ]\n  }\n}";
+const tipHookOut = ["The command did not run. A PreToolUse hook", "(`.claude/hooks/block-no-verify.mjs`) blocked it before git", "started. The hook rejects any command that uses `--no-verify`.", "Its message was: \"Blocked: do not skip git hooks. Fix the", "failing check instead.\"", "", "No commit was created."];
+
 const dim = (t: string) => <span className="font-mono text-[28px] font-normal text-neutral-600">  {t}</span>;
 
 const extraSlides: Record<string, SlideDef> = {
@@ -625,7 +594,7 @@ const extraSlides2: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "This is the idea of the talk. An agent is a role with limited tools. A skill is the procedure it follows. I could run a planner, a worker and a reviewer, each with its own skills. Here I show one, the worker. Its file says: use Sonnet, run in its own worktree, limit to 30 turns, and preload the ticket-to-pr skill. The docs say the skills field injects the full skill into the agent's context at startup. The skill itself is short: tests first, smallest change, draft PR only, stop if tests fail twice. One thing to test: I removed disable-model-invocation from this skill, because a skill with that flag cannot be preloaded into an agent.",
+    notes: "This is the idea of the talk. An agent is a role with limited tools. A skill is the procedure it follows. I could run a planner, a worker and a reviewer. Here I show one, the worker. Its file says: use Sonnet, run in its own worktree, limit to 30 turns, and preload the ticket-to-pr skill. The docs say the skills field injects the full skill into the agent at startup. The skill is short: tests first, smallest change, draft PR only, stop if tests fail twice. One thing to know: a skill with disable-model-invocation cannot be preloaded into an agent, so I removed that flag.",
   },
   "bot-flow": {
     id: "bot-flow", steps: 6, time: "1:00",
@@ -646,7 +615,7 @@ const extraSlides2: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Here is how the voice part works. I dictate a message with my phone keyboard into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows my skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. This is my small software factory. Check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
+    notes: "Here is how the voice part works. I dictate a message with my phone keyboard into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows my skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. This is my small software factory. Setup takes four steps: create a bot with BotFather, read your chat ID, run node bot.mjs, and check that gh is logged in to the right account. Check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
   },
   "bot-code": {
     id: "bot-code", steps: 3, time: "1:15",
@@ -660,36 +629,17 @@ const extraSlides2: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "The whole bot is about 50 lines, and it is not a framework. Block one: the token, the one chat ID allowed to send work, the repo directory, a startup check, and a small helper for the Telegram API. Block two: the run function. It starts claude with dash p, JSON output, a one-dollar budget cap per message, and a short list of allowed tools. Set dry run to 1 and it prints the command instead of running it. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, and send back the reply. I have not run this end to end yet, so test it with dry run first. The allow list is the only access control, so keep the token secret.",
-  },
-  "bot-setup": {
-    id: "bot-setup", steps: 4, time: "0:45",
-    render: (s) => (
-      <Slide chapter="Voice">
-        <H>Set it up in four steps</H>
-        <Rows
-          size={44}
-          active={s}
-          rows={[
-            <span key="a">In Telegram, message {mono("@BotFather")}, run {mono("/newbot")}, copy the token</span>,
-            "Send your bot a message and read your chat ID",
-            <span key="c">Run {mono("node bot.mjs")}</span>,
-            <span key="d">Check that {mono("gh")} is logged in to the right account</span>,
-          ]}
-        />
-      </Slide>
-    ),
-    notes: "Setup is four steps. One: message BotFather in Telegram, run newbot, copy the token. Two: send your bot a message, open the getUpdates URL in a browser, and read your chat ID. Three: run the script with the token, the chat ID and the repo path in environment variables. Four: check that the GitHub CLI is logged in as the account that owns the repo. Everything is on your laptop. If you do not want the laptop on all the time, the same script can run on a small server, with the repo checked out there.",
+    notes: "The whole bot is about 50 lines and has no dependencies. Block one: the token, the one chat ID allowed to send work, the repo folder, a startup check, and a helper for the Telegram API. Block two: it starts claude with dash p, JSON output, a one-dollar budget cap, and a short list of allowed tools. With dry run set to 1 it prints the command instead of running it. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, send back the reply. Test it with dry run first. The allow list is the only access control, so keep the token secret.",
   },
 };
 
 
 const extraSlides3: Record<string, SlideDef> = {
   "mem-lines": {
-    id: "mem-lines", steps: 3, time: "0:45",
+    id: "mem-lines", steps: 2, time: "0:45",
     render: (s) => (
       <Slide chapter="Memory">
-        <H>{["A good CLAUDE.md line is specific enough to check", "Say what to use, not only what to avoid", "If ESLint can check a rule, put it in ESLint"][s]}</H>
+        <H>{["A good CLAUDE.md line is specific enough to check", "Say what to use, not only what to avoid"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
             <Term size={40} lines={[
@@ -706,19 +656,10 @@ const extraSlides3: Record<string, SlideDef> = {
               L("Good:  Use date-fns. Helpers are in docs/dates.md.", "h"),
             ]} />
           )}
-          {s === 2 && (
-            <Term size={40} lines={[
-              L("CLAUDE.md:    Use named exports.", "d"),
-              L("               Claude can forget it.", "d"),
-              L(""),
-              L("ESLint rule:  import/no-default-export", "h"),
-              L("               The lint step fails when Claude forgets.", "h"),
-            ]} />
-          )}
         </Swap>
       </Slide>
     ),
-    notes: "How I write a line in CLAUDE.md. A line Claude cannot check does nothing: write clean code means nothing to the model. A line it can check does work: use named exports, or run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so say what to use instead, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. Third: if ESLint can check a rule, put it in ESLint, for example the import no-default-export rule for named exports. A CLAUDE.md line only asks, and Claude can forget it. A lint rule fails the lint step. Add a hook that runs ESLint after each edit, and Claude sees the failure right away.",
+    notes: "How I write a line in CLAUDE.md. A line Claude cannot check does nothing: write clean code means nothing to the model. A line it can check does work: use named exports, or run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so say what to use instead, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. And if a rule must always hold, a CLAUDE.md line is not enough. That is the hook tip from the start of the talk.",
   },
   "mem-pitfalls": {
     id: "mem-pitfalls", steps: 5, time: "1:00",
@@ -738,7 +679,7 @@ const extraSlides3: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Five memory pitfalls. One: the more lines you add, the less reliably Claude follows any of them. Keep CLAUDE.md under 200 lines, and shorter is better. Two: after compact, the project-root CLAUDE.md is re-read from disk, but instructions you gave only in chat are lost, so put them in the file. Three: auto-memory grows without criteria and old decisions go stale, so prune it. Four: a script that rewrites the memory file can change what Claude does in the next session, so treat memory as untrusted input and keep it visible in git or in review. Five: if a rule is ignored, it was only a request. If it must happen, use a hook.",
+    notes: "Five ways memory goes wrong. The more rules you add, the less reliably Claude follows each one, so keep CLAUDE.md under 200 lines. After compact, the project CLAUDE.md is re-read from disk, but rules you gave only in chat are lost. Auto-memory grows without criteria and old notes go stale, so prune it. A script that rewrites the memory file changes what Claude does next session, so treat memory as untrusted input. And if a rule must always hold, use a hook, as in the first tips.",
   },
   "agent-fail": {
     id: "agent-fail", steps: 4, time: "1:00",
@@ -849,12 +790,27 @@ const extraSlides4: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "How I test a skill, in four steps. One: write ten test prompts. Each has a prompt, a flag for whether the skill should run, and a check. Five should run the skill and five should not. Real prompts from your own sessions beat invented ones. Two: run each prompt three to six times, in a clean folder each time, because results vary and an agent can cheat by reading earlier chats. Three: check the results with simple pattern checks first. They are cheap, so you can run them often. Add a judge with a rubric only for complex results. Four: run the same prompts without the skill. If the result is the same, remove the skill. That saves tokens and upkeep. Keep the prompts, so you notice if results get worse. The source is a talk by Philipp Schmid at AI Engineer 2026, linked in the notes repo.",
+    notes: "How I test a skill, in four steps. One: write ten test prompts, five that should run the skill and five that should not. Real prompts from your own sessions beat invented ones. Two: run each prompt three to six times, in a clean folder each time, because results vary and an agent can cheat by reading earlier chats. Three: check the results with simple pattern checks first. They are cheap. Add a judge with a rubric only for complex results. Four: run the same prompts without the skill. If the result is the same, remove the skill. That saves tokens and upkeep. Keep the prompts, so you notice when results get worse. The source is a talk by Philipp Schmid at AI Engineer 2026, linked in the notes repo.",
   },
 };
 
 
 const extraSlides5: Record<string, SlideDef> = {
+  "tip-hook": {
+    id: "tip-hook", steps: 3, time: "0:50",
+    render: (s) => (
+      <Slide chapter="Tips">
+        <H>{["When Claude ignores a rule, make it a hook", "Register the hook in .claude/settings.json", "I asked Claude to break the rule"][s]}</H>
+        <Swap k={s}>
+          {s === 0 && <Code text={tipHookScript} size={26} />}
+          {s === 1 && <Code text={tipHookSettings} size={30} />}
+          {s === 2 && <Term size={28} lines={[L('$ claude -p "Run this exact command and tell me what happened:', "p"), L('    git commit --allow-empty --no-verify -m test"', "p"), L(""), ...tipHookOut.map((t) => L(t))]} />}
+        </Swap>
+      </Slide>
+    ),
+    notes: "A rule in CLAUDE.md is a request. A hook is code, so it enforces. This is the smallest useful one: a PreToolUse hook that blocks git commit with no-verify, so Claude cannot skip your git hooks. It reads the command from standard input. If it matches, it prints a message and exits with code 2, which blocks the command and sends the message back to Claude. The second block registers it for Bash commands. Then I asked Claude to run exactly that command. It did not run. Claude said the hook blocked it, did not try to get around it, and no commit was created. The idea comes from the Everything Claude Code repo, which has hooks like this. I wrote my own eight lines instead of installing it.",
+  },
+
   "tip-skills-cost": {
     id: "tip-skills-cost", steps: 3, time: "0:40",
     render: (s) => (
@@ -996,20 +952,20 @@ const extraSlides5: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "Good morning, everyone. I'm Yaroslav. Quick question: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. That is where this talk starts. I use Claude Code and AI agents every working day, and I will show you how I set them up and why each part matters: what Claude remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. I also built a small software factory. A task goes in from my phone, and a pull request comes out, with an agent doing the work in between. You will see it at the end. A factory like that is built from the same parts you use by hand. If a skill is vague, every agent runs a vague skill. If memory is stale, every agent starts from stale notes. So the more you automate, the more these details matter. If you want control, this is where you get it, not from a bigger model.",
+    notes: "Good morning, everyone. I'm Yaroslav. Quick question: who asked an AI to write code this week? Keep your hand up if you let it run without watching. That is where this talk starts. I use Claude Code and AI agents every working day, and I will show how I set them up and why each part matters: what Claude remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. I also built a small software factory. A task goes in from my phone, and a pull request comes out. You will see it at the end. A factory like that is made of the same parts you use by hand. If a skill is vague, every agent runs a vague skill. So the more you automate, the more these details matter. If you want control, this is where you get it, not from a bigger model.",
   },
 };
 
 const order = [
   "hero", "vision",
-  "d-tips", "tip-skills-cost", "tip-pipe", "tip-audit",
+  "d-tips", "tip-skills-cost", "tip-pipe", "tip-audit", "tip-hook",
   "d-memory", "memory", "mem-lines", "mem-pitfalls",
   "d-commands", "modes", "style", "commands",
-  "d-skills", "which", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
+  "d-skills", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
   "d-context", "context", "cost", "smart-zone",
   "d-agents", "agent-decision", "live-agent", "bad-tool", "agent-skill", "agent-fail",
-  "d-voice", "voice", "bot-flow", "bot-code", "bot-setup", "guardrails",
-  "judgement", "close", "links",
+  "d-voice", "voice", "bot-flow", "bot-code", "guardrails",
+  "close", "links",
 ];
 
 const all: Record<string, SlideDef> = { ...Object.fromEntries(baseSlides.map((x) => [x.id, x])), ...extraSlides, ...extraSlides2, ...extraSlides3, ...extraSlides4, ...extraSlides5 };
