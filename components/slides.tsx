@@ -468,7 +468,7 @@ const baseSlides: SlideDef[] = [
       </Slide>
     ),
     notes:
-      "Three things to try tomorrow. Run slash context and see what loads before you type. Switch to concise and see how much shorter the answers get. And write one skill for something you paste every week, with a description that says when not to use it. If you ever build something bigger, these small parts are what you control it with. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the last slide. Questions.",
+      "Three things to try tomorrow. Run slash context and see what loads before you type. Switch to concise and see how much shorter the answers get. And write one skill for something you paste every week, with a description that says when not to use it. These small parts are what you control a software factory with. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the last slide. Questions.",
   },
 ];
 
@@ -944,12 +944,12 @@ const extraSlides5: Record<string, SlideDef> = {
         <Swap k={s}>
           {s === 0 && <Title size={100}>I use Claude Code and AI agents every working day.</Title>}
           {s === 1 && <Title size={92}>This talk shows how I set them up, and why each part matters.</Title>}
-          {s === 2 && <Title size={92}>Some teams aim higher: agents that turn a task into a pull request.</Title>}
-          {s === 3 && <Title size={92}>Those agents are built from the same parts. To stay in control, you need to know them.</Title>}
+          {s === 2 && <Title size={92}>I also built a small software factory: a task goes in from my phone, and a pull request comes out.</Title>}
+          {s === 3 && <Title size={92}>It is made of the same parts. To stay in control, you need to know them.</Title>}
         </Swap>
       </Slide>
     ),
-    notes: "Good morning, everyone. I'm Yaroslav. Quick question: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. That is where this talk starts. I use Claude Code and AI agents every working day, and I will show you how I set them up and why each part matters: what Claude remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. Some teams aim higher. They want a task to go in and a pull request to come out, with agents doing the planning, writing, testing and review. People call that a software factory. I will not talk about factories much. I mention them because a factory is built from the same parts you use by hand. If a skill is vague, ten agents run a vague skill. If memory is stale, every agent starts from stale notes. So the more you automate, the more these details matter. If you want control, this is where you get it, not from a bigger model. At the end I show one small agent that I start by voice from my phone.",
+    notes: "Good morning, everyone. I'm Yaroslav. Quick question: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. That is where this talk starts. I use Claude Code and AI agents every working day, and I will show you how I set them up and why each part matters: what Claude remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. I also built a small software factory. A task goes in from my phone, and a pull request comes out, with an agent doing the work in between. You will see it at the end. A factory like that is built from the same parts you use by hand. If a skill is vague, every agent runs a vague skill. If memory is stale, every agent starts from stale notes. So the more you automate, the more these details matter. If you want control, this is where you get it, not from a bigger model.",
   },
 };
 
