@@ -125,7 +125,7 @@ const baseSlides: SlideDef[] = [
       </Slide>
     ),
     notes:
-      "Hi, I'm Yaroslav. I'm a staff engineer, and I use Claude Code every working day. This is the setup I actually run, with real terminal output from my own machine. I'll show you commands, how context and memory work, how I write skills, and then how I put agents to work for me through a chat message. Near the end we build a small agent from an empty file, and I break it on purpose.",
+      "Hi, I'm Yaroslav, and I use Claude Code every working day. Everything you will see today comes from my own machine.",
   },
   {
     id: "map",
@@ -133,15 +133,24 @@ const baseSlides: SlideDef[] = [
     time: "0:45",
     render: (s) => (
       <Slide>
+        <H>The parts I set up, and what each one controls</H>
         <Rows
-          size={76}
+          size={40}
           active={s}
-          rows={["Tips", "Memory", "Commands", "Skills", "Context", "Agents", "Voice"]}
+          rows={[
+            "Tips: the habits that keep it reliable",
+            "Memory: what the agent knows",
+            "Commands and modes: how I steer it",
+            "Skills: how it does the work",
+            "Context: what it can hold, and what that costs",
+            "Agents: who does the work",
+            "Voice: how I hand over a task",
+          ]}
         />
       </Slide>
     ),
     notes:
-      "This is the order of the talk, and the order I build my workflow in. Tips first: what works across every source I read. Then memory and its pitfalls. Commands and modes. Skills: how to write them, with real examples from people who write them well. Context, with real numbers from my own machine. Then agents, and last, voice: I dictate a task to a chat, and a swarm of agents does the work. Click through the seven quickly, then move on.",
+      "Here are the parts, and what each one controls. Habits that keep the agent reliable. Memory, which is what it knows. Commands and modes, which is how I steer it. Skills, which is how it does the work. Context, which is what it can hold and what that costs. Agents, who does the work. And voice, how I hand a task over. We go in this order, and at the end it all comes together in one small agent.",
   },
   {
     id: "voice",
@@ -487,7 +496,7 @@ const baseSlides: SlideDef[] = [
       </Slide>
     ),
     notes:
-      "The part no agent does for me. I read every diff. Agents produce plausible code that misses edge cases. I check the tests it wrote, because agents sometimes weaken the assertion to make a test pass. And I press merge. Verification is the best lever I know: give Claude a way to check its own work, like tests, a build or a screenshot, and ask for evidence and not a claim. Claude Code's team says the same, and in my experience it makes the biggest difference.",
+      "A factory still needs a person who reads what comes out of it. The part no agent does for me: I read every diff. Agents produce plausible code that misses edge cases. I check the tests it wrote, because agents sometimes weaken the assertion to make a test pass. And I press merge. Verification is the best lever I know: give Claude a way to check its own work, like tests, a build or a screenshot, and ask for evidence and not a claim. Claude Code's team says the same, and in my experience it makes the biggest difference.",
   },
   {
     id: "close",
@@ -509,7 +518,7 @@ const baseSlides: SlideDef[] = [
       </Slide>
     ),
     notes:
-      "Three things to do tomorrow. Run slash context and see what you load before you type. Switch to concise and see how much shorter the answers get. And write one skill for something you paste every week. Then add a second one. Thank you. Files, skills and the research are in the repo, and I will share the link. Questions.",
+      "Three things to try tomorrow. Run slash context and see what loads before you type. Switch to concise and see how much shorter the answers get. And write one skill for something you paste every week, with a description that says when not to use it. If you build a software factory, these small parts are what you control it with. Thank you. The files, the skills and the bot are in four repos on my GitHub, and the links are on the last slide. Questions.",
   },
 ];
 
@@ -666,7 +675,7 @@ const extraSlides2: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Here is how the voice part works, and it is simple. I dictate a message on my phone, with the dictation button on the keyboard, into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows the skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. I chose a bot and claude dash p over a live session because it needs no session open, and a new run starts for each message. On your side: check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
+    notes: "Here is how the voice part works, and it is simple. I dictate a message on my phone, with the dictation button on the keyboard, into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows the skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. I chose a bot and claude dash p over a live session because it needs no session open, and a new run starts for each message. This is the smallest version of the factory from the start of the talk: a task goes in from my phone, and a pull request comes out. On your side: check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
   },
   "bot-code": {
     id: "bot-code", steps: 3, time: "1:15",
@@ -918,8 +927,26 @@ const extraSlides4: Record<string, SlideDef> = {
   },
 };
 
+
+const extraSlides5: Record<string, SlideDef> = {
+  vision: {
+    id: "vision", steps: 4, time: "2:00",
+    render: (s) => (
+      <Slide>
+        <Swap k={s}>
+          {s === 0 && <Title size={104}>A task goes in. A pull request comes out.</Title>}
+          {s === 1 && <Title size={92}>That is a software factory: a line of agents that plan, write, test and review.</Title>}
+          {s === 2 && <Title size={92}>Every agent in it is built from the same few parts.</Title>}
+          {s === 3 && <Title size={92}>If you want control, you need to know how those parts work.</Title>}
+        </Swap>
+      </Slide>
+    ),
+    notes: "Good morning, everyone. I'm Yaroslav. Quick question before we start: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. Fine. That second hand is where this talk starts. Here is where I think we are going. A task goes in, and a pull request comes out. Nobody sits between them typing prompts. People call this a software factory: a line of agents that plan, write, test and review. Many of us are already trying to build one. I want to talk about what happens inside it. Every agent in that factory is built from the same few parts you use today when you sit in front of Claude Code: what it remembers, which skills it follows, how much it can hold in context, which tools it can touch. The factory does not remove these parts. It multiplies them. If a skill is vague, ten agents run a vague skill. If memory is stale, every agent starts from the same stale notes. If a tool description is bad, every agent picks the wrong tool, and picks it faster. So the more you automate, the more these details matter. And if you want control, over cost, over quality, over what gets merged, this is where you get it. It does not come from a bigger model. It comes from how you set the agent up. That is the plan for the next twenty minutes. I will show you my own setup, with real output from my machine. At the end we look at one small agent: a worker that follows a skill, and that I start by voice from a chat message on my phone. It is a tiny software factory, and you will see every part of it.",
+  },
+};
+
 const order = [
-  "hero", "map",
+  "hero", "vision", "map",
   "tip-verify", "tip-grill", "tip-worktree", "tip-pitfalls",
   "memory", "mem-lines", "mem-pitfalls",
   "modes", "style", "commands",
@@ -930,7 +957,7 @@ const order = [
   "judgement", "close", "links",
 ];
 
-const all: Record<string, SlideDef> = { ...Object.fromEntries(baseSlides.map((x) => [x.id, x])), ...extraSlides, ...extraSlides2, ...extraSlides3, ...extraSlides4 };
+const all: Record<string, SlideDef> = { ...Object.fromEntries(baseSlides.map((x) => [x.id, x])), ...extraSlides, ...extraSlides2, ...extraSlides3, ...extraSlides4, ...extraSlides5 };
 
 export const slides: SlideDef[] = order.map((id) => {
   const sl = all[id];
