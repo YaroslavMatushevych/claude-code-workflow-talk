@@ -99,7 +99,7 @@ export default function Presentation() {
           </motion.div>
         </AnimatePresence>
         <div className="absolute bottom-0 left-0 h-[4px] bg-[#d97757]" style={{ width: `${((current + 1) / slides.length) * 100}%` }} />
-        <div className="absolute bottom-[18px] right-[40px] font-mono text-[16px] text-neutral-700">
+        <div className="absolute bottom-[18px] right-[40px] font-mono text-[16px] text-neutral-500">
           {current + 1}/{slides.length}
           {timerOn ? `  ${fmt(elapsed)}` : ""}
         </div>

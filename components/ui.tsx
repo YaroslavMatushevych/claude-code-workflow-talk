@@ -8,7 +8,7 @@ export function Slide({ chapter, children }: { chapter?: string; children: React
   return (
     <div className="relative w-full h-full bg-black text-white flex flex-col px-[120px] py-[72px]">
       {chapter && (
-        <div className="absolute top-[40px] left-[120px] font-mono text-[18px] tracking-[0.25em] uppercase text-neutral-600">
+        <div className="absolute top-[40px] left-[120px] font-mono text-[18px] tracking-[0.25em] uppercase text-[#8a8a8a]">
           {chapter}
         </div>
       )}
@@ -50,7 +50,7 @@ export function Swap({ k, children }: { k: number | string; children: ReactNode 
 
 export type Line = { t: string; c?: "p" | "o" | "h" | "d" };
 
-const lineColor = { p: "text-white", o: "text-neutral-400", h: "text-[#d97757]", d: "text-neutral-700" } as const;
+const lineColor = { p: "text-white", o: "text-neutral-300", h: "text-[#d97757]", d: "text-[#8a8a8a]" } as const;
 
 // Terminal block. p = command, o = output, h = highlighted, d = dimmed.
 export function Term({ lines, size = 28 }: { lines: Line[]; size?: number }) {
@@ -61,7 +61,7 @@ export function Term({ lines, size = 28 }: { lines: Line[]; size?: number }) {
     >
       {lines.map((l, i) => (
         <div key={i} className={`whitespace-pre ${lineColor[l.c ?? "o"]}`}>
-          {l.t}
+          {l.t || "\u00a0"}
         </div>
       ))}
     </div>
@@ -79,7 +79,7 @@ export function Code({ text, hl, size = 24 }: { text: string; hl?: [number, numb
       {lines.map((l, i) => {
         const on = !hl || (i + 1 >= hl[0] && i + 1 <= hl[1]);
         return (
-          <div key={i} className={`whitespace-pre transition-opacity duration-300 ${on ? "text-neutral-100" : "text-neutral-700"}`}>
+          <div key={i} className={`whitespace-pre transition-opacity duration-300 ${on ? "text-neutral-100" : "text-[#7a7a7a]"}`}>
             {l || " "}
           </div>
         );
@@ -95,7 +95,7 @@ export function Rows({ rows, active, size = 56 }: { rows: ReactNode[]; active: n
       {rows.map((r, i) => (
         <div
           key={i}
-          style={{ fontSize: size, color: i === active ? "#fafafa" : "#5c5c5c" }}
+          style={{ fontSize: size, color: i === active ? "#fafafa" : "#858585" }}
           className="font-bold tracking-tight transition-colors duration-300"
         >
           {r}
@@ -115,7 +115,7 @@ export function Big({ children, size = 220, accent = true }: { children: ReactNo
 
 export function Mono({ children, size = 40, dim }: { children: ReactNode; size?: number; dim?: boolean }) {
   return (
-    <div style={{ fontSize: size }} className={`font-mono ${dim ? "text-neutral-500" : "text-neutral-100"}`}>
+    <div style={{ fontSize: size }} className={`font-mono ${dim ? "text-neutral-400" : "text-neutral-100"}`}>
       {children}
     </div>
   );
