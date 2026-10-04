@@ -569,6 +569,12 @@ Commits: !\`git log --oneline main..HEAD\`
 Diff stat: !\`git diff main...HEAD --stat\`
 Write a PR description: what changed, why, risks, test plan. Max 150 words. Extra focus: $ARGUMENTS`;
 
+
+const tipPipeCmd = ["$ git diff main...HEAD | claude -p \\", "    \"List the 3 biggest risks in this diff.", "     One line each, no intro.\""];
+const tipPipeOut = ["- Whitespace-only `q` (for example `\"  \"`) is not nullish.", "  It wins over `saved`, then `trim()` returns `\"\"`. The", "  saved postcode is lost."];
+const tipToyClaudeMd = "# Project\nAlways use tabs for indentation.\nUse 2-space indentation.\nWrite clean code.\nAlways write tests first.\nNever write tests for trivial functions.\nIMPORTANT: ALWAYS follow ALL rules. NEVER break any rule. IMPORTANT.";
+const tipAuditOut = ["1. Lines 2 and 3 give opposite rules. One says tabs, the", "  other says 2-space indentation. The model cannot obey", "  both.", "2. Line 7 is pressure language. It is all-caps IMPORTANT,", "  ALWAYS, NEVER, and it repeats the other rules."];
+
 const dim = (t: string) => <span className="font-mono text-[28px] font-normal text-neutral-600">  {t}</span>;
 
 const extraSlides: Record<string, SlideDef> = {
@@ -679,19 +685,6 @@ const extraSlides2: Record<string, SlideDef> = {
 
 
 const extraSlides3: Record<string, SlideDef> = {
-  "tip-verify": {
-    id: "tip-verify", steps: 2, time: "0:45",
-    render: (s) => (
-      <Slide chapter="Tips">
-        <H>Give Claude a way to check its own work</H>
-        <Swap k={s}>
-          {s === 0 && (<><Mono size={54}>Fix the postcode bug.</Mono><Mono size={54}>Run `pnpm test` and show me the output.</Mono></>)}
-          {s === 1 && <div className="text-[60px] font-bold leading-tight">A Stop hook stops Claude from finishing until the check passes.</div>}
-        </Swap>
-      </Slide>
-    ),
-    notes: "First tip: give Claude a way to check its own work, and ask for the proof. In many of my prompts I add one line: run the tests and show me the output. For a hard guarantee, use a Stop hook. It blocks Claude from finishing until your check passes. A hook is code, so it enforces. CLAUDE.md only asks. The goal command does something similar, and it is in the commands section.",
-  },
   "mem-lines": {
     id: "mem-lines", steps: 3, time: "0:45",
     render: (s) => (
@@ -862,28 +855,48 @@ const extraSlides4: Record<string, SlideDef> = {
 
 
 const extraSlides5: Record<string, SlideDef> = {
-  "tip-grill": {
-    id: "tip-grill", time: "0:25",
-    render: () => (
+  "tip-skills-cost": {
+    id: "tip-skills-cost", steps: 3, time: "0:40",
+    render: (s) => (
       <Slide chapter="Tips">
-        <H>Ask Claude to question you before it opens a PR</H>
-        <Mono size={48}>Grill me on these changes.</Mono>
-        <Mono size={48}>Do not open a PR until I pass.</Mono>
+        <H>{["Every skill costs tokens in every session", "One more skill: about 110 more tokens", "Mark a skill manual-only and it costs nothing"][s]}</H>
+        <Swap k={s}>
+          {s === 0 && <Term size={36} lines={[L('$ claude -p "/context"', "p"), L("Skills                      9.8k", "h"), L("my installed skills: names and descriptions", "d")]} />}
+          {s === 1 && <Term size={36} lines={[L("a new skill with a 51-word description", "p"), L("Skills                      9.9k", "h"), L("release-notes    Project    ~110", "h")]} />}
+          {s === 2 && <Term size={36} lines={[L("disable-model-invocation: true", "p"), L("Skills                      9.8k", "h"), L("release-notes    not listed", "d")]} />}
+        </Swap>
       </Slide>
     ),
-    notes: "Second tip. I use a prompt like: grill me on these changes, and do not open a PR until I pass. Claude asks the questions I skipped. It finds gaps in my own thinking before it writes code, and that is cheaper than finding them in review.",
+    notes: "Every skill that Claude can start on its own puts its name and description into the context of every session, whether you use it or not. I tested it with one new skill with a 51-word description. The skills line in slash context went from 9.8 to 9.9 thousand tokens, and the skill is listed at about 110 tokens. Mine add up to 9.8 thousand before I type a word. If you only call a skill by hand, add disable-model-invocation true to its frontmatter. In my test the line went back to 9.8 and the skill was not listed. The docs say such a skill stays out of the context until you call it.",
   },
-  "tip-review": {
-    id: "tip-review", time: "0:25",
-    render: () => (
+  "tip-pipe": {
+    id: "tip-pipe", steps: 2, time: "0:40",
+    render: (s) => (
       <Slide chapter="Tips">
-        <H>Review the diff in a fresh session</H>
-        <Mono size={48}>Review this diff against PLAN.md.</Mono>
-        <Mono size={48}>Report bugs and missing requirements only.</Mono>
+        <H>{s === 0 ? "Use Claude as a Unix command" : "The first of three risks it printed"}</H>
+        <Swap k={s}>
+          {s === 0 && <Term size={34} lines={tipPipeCmd.map((t) => L(t, "p"))} />}
+          {s === 1 && <Term size={30} lines={tipPipeOut.map((t) => L(t))} />}
+        </Swap>
       </Slide>
     ),
-    notes: "Third tip. A second Claude with no memory of writing the code reads the diff against the plan and reports gaps. It does not defend decisions it did not make. Tell it to report real bugs and missing requirements only, or a reviewer told to find problems will always find something, and you end up adding code you did not need.",
+    notes: "Claude Code reads standard input, so you can pipe a diff, a log or a failing test into it and get the answer back in your terminal, in a script, or in CI. This is a real run on the small demo repo from before: three risks in three lines. It caught that a value with only spaces is not null, so the saved postcode is lost. My own demo did not test that case. Add dash dash output format json and you also get the tokens and the cost, so a script can track what each run costs.",
   },
+  "tip-audit": {
+    id: "tip-audit", steps: 3, time: "0:50",
+    render: (s) => (
+      <Slide chapter="Tips">
+        <H>{["A CLAUDE.md with two problems", "Audit your instructions", "What it found"][s]}</H>
+        <Swap k={s}>
+          {s === 0 && <Code text={tipToyClaudeMd} size={34} />}
+          {s === 1 && <Mono size={80}>/doctor prompt-audit</Mono>}
+          {s === 2 && <Term size={34} lines={tipAuditOut.map((t) => L(t, "h"))} />}
+        </Swap>
+      </Slide>
+    ),
+    notes: "Slash doctor with prompt-audit reads your instruction files and reports problems. I gave it a CLAUDE.md with two planted problems: one line says tabs, another says 2 spaces, and the last line shouts always and never. It found both. It says the two indentation lines cannot both be followed, and that all-caps pressure language adds no information. It also said it cannot tell which of two conflicting lines is newer without git history, so you have to decide. This ran on a toy file. The same command works on your real CLAUDE.md, and it also checks your skills. I did not put my own files on a slide.",
+  },
+
 
   "sk-run": {
     id: "sk-run", steps: 3, time: "0:50",
@@ -905,10 +918,10 @@ const extraSlides5: Record<string, SlideDef> = {
     render: () => (
       <Slide>
         <Title size={128}>Tips</Title>
-        <div className="mt-8 text-[48px] text-neutral-400">Habits that keep Claude reliable</div>
+        <div className="mt-8 text-[48px] text-neutral-400">Three things I tested on my own machine</div>
       </Slide>
     ),
-    notes: "First, the habits. They cost nothing to start, and everything later builds on them.",
+    notes: "Three tips, and none of them is the usual advice. Each one comes from a real run on my machine, and I show the output.",
   },
   "d-memory": {
     id: "d-memory", time: "0:10",
@@ -989,7 +1002,7 @@ const extraSlides5: Record<string, SlideDef> = {
 
 const order = [
   "hero", "vision",
-  "d-tips", "tip-verify", "tip-grill", "tip-review",
+  "d-tips", "tip-skills-cost", "tip-pipe", "tip-audit",
   "d-memory", "memory", "mem-lines", "mem-pitfalls",
   "d-commands", "modes", "style", "commands",
   "d-skills", "which", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
