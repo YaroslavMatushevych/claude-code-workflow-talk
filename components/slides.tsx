@@ -117,7 +117,7 @@ const goodTool = `description:
 const baseSlides: SlideDef[] = [
   {
     id: "hero",
-    time: "0:30",
+    time: "0:10",
     render: () => (
       <Slide>
         <Title size={112}>Inside My Real Claude Code Workflow</Title>
@@ -126,31 +126,6 @@ const baseSlides: SlideDef[] = [
     ),
     notes:
       "Hi, I'm Yaroslav, and I use Claude Code every working day. Everything you will see today comes from my own machine.",
-  },
-  {
-    id: "map",
-    steps: 7,
-    time: "0:45",
-    render: (s) => (
-      <Slide>
-        <H>The parts I set up, and what each one controls</H>
-        <Rows
-          size={40}
-          active={s}
-          rows={[
-            "Tips: the habits that keep it reliable",
-            "Memory: what the agent knows",
-            "Commands and modes: how I steer it",
-            "Skills: how it does the work",
-            "Context: what it can hold, and what that costs",
-            "Agents: who does the work",
-            "Voice: how I hand over a task",
-          ]}
-        />
-      </Slide>
-    ),
-    notes:
-      "Here are the parts, and what each one controls. Habits that keep the agent reliable. Memory, which is what it knows. Commands and modes, which is how I steer it. Skills, which is how it does the work. Context, which is what it can hold and what that costs. Agents, who does the work. And voice, how I hand a task over. We go in this order, and at the end it all comes together in one small agent.",
   },
   {
     id: "voice",
@@ -166,13 +141,12 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes:
-      "Last topic, and the one that ties it together: voice. Slash voice turns on built-in dictation. Tap mode: tap to record, tap to send. The docs say it is tuned for coding vocabulary, things like regex, OAuth and JSON, and it uses the project name and git branch as hints. It needs a claude.ai login and a local microphone, so no SSH, and it uses no tokens. Hold mode has a warm-up delay, so I bind it to a modifier key in keybindings.json. Third block is the settings file. I could not find a first-person account of dictation errors on code terms, only vendor claims, so say which of those you saw yourself. I speak long prompts with real context. Typing makes me write short ones.",
+    notes: "Last topic. Slash voice turns on built-in dictation. Tap mode: tap to record, tap to send. The docs say it is tuned for coding words like regex, OAuth and JSON. It needs a claude.ai login and a local microphone, so it does not work over SSH, and it uses no tokens. Hold mode has a warm-up delay, so I bind it to a modifier key. The third block is the settings file. For my phone I use the keyboard's dictation button instead, because slash voice needs a local microphone. I speak long prompts with real context. Typing makes me write short ones.",
   },
   {
     id: "modes",
     steps: 4,
-    time: "0:45",
+    time: "0:40",
     render: (s) => (
       <Slide chapter="Setup">
         <H>Shift+Tab switches the permission mode</H>
@@ -194,7 +168,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "style",
     steps: 2,
-    time: "0:30",
+    time: "0:45",
     render: (s) => (
       <Slide chapter="Setup">
         <H>Make answers shorter with an output style</H>
@@ -210,7 +184,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "commands",
     steps: 7,
-    time: "1:15",
+    time: "0:40",
     render: (s) => {
       const items: [string, string][] = [
         ["/btw", "Ask a side question without adding it to the context"],
@@ -232,8 +206,7 @@ const baseSlides: SlideDef[] = [
         </Slide>
       );
     },
-    notes:
-      "Seven commands people skip. Slash btw asks a side question while Claude is working. No tools, and it never enters the history, so it costs no context. Rewind, or Escape twice, takes you back to before the mistake. That beats arguing with it, because the wrong turn leaves your context. Fork tries another direction and keeps the original. Goal sets a condition, like all tests pass and lint is clean, and Claude keeps going until it is true. Batch plans a large change, then fans it out to parallel agents in separate worktrees. Code review with fix reviews the diff and applies the findings. Insights builds an HTML report about your own sessions. I run that when I want to see how I really work.",
+    notes: "Seven commands people skip. Slash btw asks a side question while Claude works. It never enters the history, so it costs no context. Rewind, or Escape twice, goes back to before the mistake, so the wrong turn leaves your context. Fork tries another direction and keeps the original. Goal sets a condition, like all tests pass, and Claude keeps going until it is true. Batch splits a large change across parallel agents in separate worktrees. Code review with fix reviews the diff and applies the findings. Insights builds a report about your own sessions.",
   },
   {
     id: "context",
@@ -265,7 +238,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "cost",
     steps: 3,
-    time: "1:15",
+    time: "0:45",
     render: (s) => (
       <Slide chapter="Context">
         <H>{["One short prompt, run on Haiku", "The same prompt on three models", "A second run on Sonnet costs less"][s]}</H>
@@ -307,53 +280,27 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes:
-      "Same one-word prompt, three models, run just now. I asked each one to reply with ok. Every call still wrote around 25 thousand tokens into the cache, because that is the system prompt, tools and skills, before my prompt. Haiku cost five cents. Sonnet eleven. Opus twenty-two. Same question. Then I ran Sonnet a second time within the hour. Part of that prefix was read from cache this time, and the cost dropped from 11 cents to 6. That is prompt caching in a real run. Not everything hit the cache on the second call. About 15 thousand tokens were written again, and I did not dig into why. The lesson holds anyway: your prefix is paid for on every session, and the cache makes the second call cheaper.",
+    notes: "Same one-word prompt, three models, run just now. Every call wrote around 25 thousand tokens into the cache, because that is the system prompt, tools and skills, before my prompt. Haiku cost five cents. Sonnet eleven. Opus twenty-two. Then I ran Sonnet again within the hour. Part of that prefix was read from cache, and the cost dropped from 11 cents to 6. That is prompt caching in a real run. About 15 thousand tokens were still written again, and I did not find out why. Your prefix is paid for in every session, and the cache makes the second call cheaper.",
   },
   {
-    id: "usage",
-    steps: 2,
-    time: "0:30",
+    id: "memory",
+    steps: 3,
+    time: "0:40",
     render: (s) => (
-      <Slide chapter="Context">
-        <H>{s === 0 ? "My last 24 hours" : "My last 7 days"}</H>
+      <Slide chapter="Memory">
+        <H>{["Claude reads two kinds of memory at session start", "Auto-memory: the notes Claude keeps about me", "Only the first 200 lines of that index load"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
-            <Term
-              size={32}
-              lines={[
-                L('$ claude -p "/usage"', "p"),
-                L("Last 24h · 112 requests · 2 sessions"),
-                L("  86% of your usage came from", "h"),
-                L("  subagent-heavy sessions", "h"),
+            <Rows
+              size={56}
+              active={-1}
+              rows={[
+                <span key="a"><span className="text-white">CLAUDE.md</span>: I write it</span>,
+                <span key="b"><span className="text-white">Auto-memory</span>: Claude writes it</span>,
               ]}
             />
           )}
           {s === 1 && (
-            <Term
-              size={32}
-              lines={[
-                L("Last 7d · 1463 requests · 14 sessions"),
-                L("  74% of your usage was at >150k context", "h"),
-                L("  33% came from sessions active for 8+ hours"),
-              ]}
-            />
-          )}
-        </Swap>
-      </Slide>
-    ),
-    notes:
-      "Slash usage shows where your limits go, based on local sessions on this laptop. Last 24 hours is mostly the research I did to prepare this talk, with subagents: 86 percent. The seven-day view is the honest one. Seventy-four percent of my usage happened above 150 thousand tokens of context, and a third came from sessions that stayed open more than eight hours. That is my bad habit. Long sessions are where context gets noisy and cost goes up. It is why the next slides are about clearing context.",
-  },
-  {
-    id: "memory",
-    steps: 2,
-    time: "0:45",
-    render: (s) => (
-      <Slide chapter="Memory">
-        <H>{s === 0 ? "My auto-memory index" : "Only the first 200 lines of the index load at session start"}</H>
-        <Swap k={s}>
-          {s === 0 && (
             <Term
               size={26}
               lines={[
@@ -367,12 +314,11 @@ const baseSlides: SlideDef[] = [
               ]}
             />
           )}
-          {s === 1 && <Big>200 lines</Big>}
+          {s === 2 && <Big>200 lines</Big>}
         </Swap>
       </Slide>
     ),
-    notes:
-      "Auto memory is Claude writing notes for itself. It lives in a memory folder per project, with an index file and one file per fact. This is the index from my own setup, 22 files. Each line is a pointer, and the detail sits in the topic file. Two rules matter. Only the first 200 lines or 25 kilobytes of the index load at session start, so keep it an index. And topic files load on demand. CLAUDE.md is the other half: that one I write, and it loads in full. Memory is context, not enforcement. If something must happen every time, that is a hook.",
+    notes: "Claude reads two kinds of memory at the start of every session. CLAUDE.md, which I write, and auto-memory, which Claude writes. I will not explain CLAUDE.md, you know it. Auto-memory lives in a folder per project: an index file and one file per fact. This is the index from my setup, 22 files. Each line points to a topic file. Only the first 200 lines or 25 kilobytes of the index load at the start, and topic files load on demand. Memory is context, not enforcement. If something must happen every time, use a hook.",
   },
   {
     id: "which",
@@ -421,10 +367,10 @@ const baseSlides: SlideDef[] = [
   {
     id: "live-agent",
     steps: 4,
-    time: "3:00",
+    time: "0:50",
     render: (s) => (
       <Slide chapter="Agents">
-        <H>{["A tool: a name, a description, and inputs", "A function that runs the tool", "A loop: ask Claude, run the tool it picks", "Send the tool result back to Claude"][s]}</H>
+        <H>{["Build an agent. Step 1: a tool with a name, a description and inputs", "Step 2: a function that runs the tool", "Step 3: a loop that asks Claude and runs the tool it picks", "Step 4: send the tool result back to Claude"][s]}</H>
         <Swap k={s}>
           {s === 0 && <Code text={agentTools} size={24} />}
           {s === 1 && <Code text={agentRun} size={32} />}
@@ -433,13 +379,12 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes:
-      "Now the agent. About 45 lines. I recorded this run beforehand, and the code is on screen in four chunks. First, the tool definition: a name, a description and a schema. That is all Claude ever sees of my code. Second, the function that runs the tool, and the first message. Third, the loop. Call the model, push its answer onto the messages. If it did not ask for a tool, we are done. Fourth, if it asked, run the tool and send back a tool result, as a user message, with the matching id. Hard cap of ten turns, so a confused agent cannot loop forever. The SDK needs an API key. I have not run this exact file yet, so run it and record the output before the talk.",
+    notes: "Now the agent. About 45 lines. I recorded this run beforehand, and the code is on screen in four steps. First, the tool: a name, a description and a schema. That is all Claude ever sees of my code. Second, the function that runs the tool. Third, the loop. Call the model and add its answer to the messages. If it did not ask for a tool, we are done. Fourth, if it asked, run the tool and send back a tool result, as a user message, with the matching id. There is a hard cap of ten turns. I have not run this exact file yet, so I record the output before the talk.",
   },
   {
     id: "bad-tool",
     steps: 3,
-    time: "1:15",
+    time: "0:50",
     render: (s) => (
       <Slide chapter="Agents">
         <H>{["A bad tool description", "A good tool description", "Two questions to test both"][s]}</H>
@@ -459,13 +404,12 @@ const baseSlides: SlideDef[] = [
         </Swap>
       </Slide>
     ),
-    notes:
-      "Now I break it. This is the bad description: gets the stock price for a ticker, and a parameter with no type guidance. Claude chooses a tool only from this text. Next is the version from Anthropic's docs: what it does, which tickers, what it returns, when to use it, and what it will not do. The docs call the description by far the most important factor. Last, the two questions. The first one says Apple, not a ticker. The second needs history the tool does not have. With the bad description it may pass Apple instead of AAPL, call the tool anyway, or retry. I do not know which it picks on the day, and that is the point. Record a few runs ahead of time, and show what Claude sent each time.",
+    notes: "Now I break it. The bad description says: gets the stock price for a ticker, and the parameter says nothing. Claude chooses a tool only from this text. Next is a good description: what it does, which tickers, what it returns, when to use it, and what it will not do. Last, two questions. The first says Apple, not a ticker. The second needs history the tool does not have. With the bad description Claude may pass Apple instead of AAPL, call the tool anyway, or retry. I do not know which it picks, so I recorded several runs and I show what Claude sent each time.",
   },
   {
     id: "guardrails",
     steps: 5,
-    time: "0:30",
+    time: "0:25",
     render: (s) => (
       <Slide chapter="Voice">
         <H>Guardrails for work I am not watching</H>
@@ -488,7 +432,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "judgement",
     steps: 3,
-    time: "0:30",
+    time: "0:45",
     render: (s) => (
       <Slide chapter="Judgement">
         <H>What I still do myself</H>
@@ -501,7 +445,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "close",
     steps: 4,
-    time: "0:30",
+    time: "0:40",
     render: (s) => (
       <Slide>
         <Swap k={s}>
@@ -654,7 +598,7 @@ const extraSlides2: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "This is the idea of the talk. An agent is a role with limited tools. A skill is the procedure it follows. I could run a planner, a worker and a reviewer, each with its own skills. For the talk I show one, the worker. The agent file says: use Sonnet, run in its own git worktree, limit to 30 turns, and preload the ticket-to-pr skill. The docs say the skills field injects the full skill content into the subagent's context at startup, so the agent does not have to find it. The second block is the skill: tests first, smallest change, draft PR only, stop if tests fail twice. Thin skill, checkable steps. One thing to test before the talk: I removed disable-model-invocation from this skill, because I am not sure a preloaded skill can have it. Check on your version.",
+    notes: "This is the idea of the talk. An agent is a role with limited tools. A skill is the procedure it follows. I could run a planner, a worker and a reviewer, each with its own skills. Here I show one, the worker. Its file says: use Sonnet, run in its own worktree, limit to 30 turns, and preload the ticket-to-pr skill. The docs say the skills field injects the full skill into the agent's context at startup. The skill itself is short: tests first, smallest change, draft PR only, stop if tests fail twice. One thing to test: I removed disable-model-invocation from this skill, because a skill with that flag cannot be preloaded into an agent.",
   },
   "bot-flow": {
     id: "bot-flow", steps: 6, time: "1:00",
@@ -665,7 +609,7 @@ const extraSlides2: Record<string, SlideDef> = {
           size={46}
           active={s}
           rows={[
-            "I dictate a message on my phone",
+            "I dictate a message with my phone keyboard",
             "It arrives in a Telegram chat with my bot",
             "The bot on my laptop receives it",
             <span key="d">The bot runs {mono("claude -p")} in my repo</span>,
@@ -675,7 +619,7 @@ const extraSlides2: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Here is how the voice part works, and it is simple. I dictate a message on my phone, with the dictation button on the keyboard, into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows the skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. I chose a bot and claude dash p over a live session because it needs no session open, and a new run starts for each message. If you ever build a software factory, this is its smallest version: a task goes in from my phone, and a pull request comes out. On your side: check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
+    notes: "Here is how the voice part works. I dictate a message with my phone keyboard into a Telegram chat with my own bot. A small script on my laptop receives it and starts a headless Claude Code run in my repo. Claude hands the task to the worker agent, which follows my skill, and I get a draft pull request and a reply in the chat. The laptop must be on, with the script running. If you ever build a software factory, this is its smallest version. Check if your organisation allows this on a work login. Mine blocks Remote Control, for example.",
   },
   "bot-code": {
     id: "bot-code", steps: 3, time: "1:15",
@@ -689,7 +633,7 @@ const extraSlides2: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "The whole bot is about 50 lines, and it is not a framework. Block one: the token, the one chat ID that is allowed to send work, the repo directory, a startup check, and a small helper for the Telegram API. Block two: the run function. It starts claude with dash p, JSON output, a one-dollar budget cap per message, and a short list of allowed tools. An append-system-prompt line tells it to work on a branch and open a draft PR. Set dry run to 1 and it prints the command instead of running it, so you can test the Telegram part without any cost. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, send back the reply. I have not run this script end to end, so run it once before the talk. The allow list is the only access control, so keep the token secret.",
+    notes: "The whole bot is about 50 lines, and it is not a framework. Block one: the token, the one chat ID allowed to send work, the repo directory, a startup check, and a small helper for the Telegram API. Block two: the run function. It starts claude with dash p, JSON output, a one-dollar budget cap per message, and a short list of allowed tools. Set dry run to 1 and it prints the command instead of running it. Block three: the loop. Poll Telegram, ignore every chat except mine, run the task, and send back the reply. I have not run this end to end yet, so test it with dry run first. The allow list is the only access control, so keep the token secret.",
   },
   "bot-setup": {
     id: "bot-setup", steps: 4, time: "0:45",
@@ -727,30 +671,6 @@ const extraSlides3: Record<string, SlideDef> = {
     ),
     notes: "First tip: give Claude a way to check its own work. The goal command does it. You state a condition, like all tests in this folder pass and lint is clean, and Claude keeps working until it is true. For a hard guarantee, use a Stop hook: it blocks the turn from ending until your check passes. A hook is code, so it enforces. CLAUDE.md only asks. I ask for evidence in every prompt: run the tests and show me the output.",
   },
-  "tip-grill": {
-    id: "tip-grill", time: "0:30",
-    render: () => (
-      <Slide chapter="Tips">
-        <H>Ask Claude to question you before it opens a PR</H>
-        <Mono size={48}>Grill me on these changes.</Mono>
-        <Mono size={48}>Do not open a PR until I pass.</Mono>
-      </Slide>
-    ),
-    notes: "I use a prompt like: grill me on these changes, and do not open a PR until I pass. Claude asks the questions I skipped. It finds the gaps in my own thinking before it writes code, and that is cheaper than finding them in review.",
-  },
-  "tip-worktree": {
-    id: "tip-worktree", steps: 2, time: "0:30",
-    render: (s) => (
-      <Slide chapter="Tips">
-        <H>{s === 0 ? "Run parallel sessions in separate worktrees" : "Give an agent its own worktree"}</H>
-        <Swap k={s}>
-          {s === 0 && <Term size={42} lines={[L("$ claude --worktree feature-auth", "p"), L("$ claude -w fix-postcode --tmux", "p")]} />}
-          {s === 1 && <Code text={"---\nname: worker\nisolation: worktree\n---"} size={44} />}
-        </Swap>
-      </Slide>
-    ),
-    notes: "Parallel sessions without collisions. Dash dash worktree gives each session its own checkout. Add tmux for a separate pane. Agents get the same with isolation worktree in their file, as in the second block. More parallel agents means more to review, and I come back to that in the agents part.",
-  },
   "tip-pitfalls": {
     id: "tip-pitfalls", steps: 5, time: "0:45",
     render: (s) => (
@@ -775,7 +695,7 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "mem-lines", steps: 3, time: "0:45",
     render: (s) => (
       <Slide chapter="Memory">
-        <H>{["Write lines Claude can check", "Say what to use instead", "Use a linter for what a linter can check"][s]}</H>
+        <H>{["CLAUDE.md: write lines Claude can check", "CLAUDE.md: say what to use instead", "CLAUDE.md: leave to a linter what a linter can check"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
             <Term size={40} lines={[L("✗ Write clean code", "d"), L(""), L("✓ Use named exports", "h"), L("✓ Run `pnpm test <file>` before saying done", "h")]} />
@@ -839,7 +759,7 @@ const extraSlides3: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "A rule of thumb I use: on current models, quality starts to drop somewhere around 125 to 150 thousand tokens of context. The exact number is debated and depends on the task, so check your own sessions with slash context. It does not follow the size of the context window. One task per session. When a task is bigger than that, split it and hand off with a short summary file. Compare it with my own usage from the last slides: 74 percent of my usage was above 150 thousand.",
+    notes: "A rule of thumb I use: on current models, quality starts to drop somewhere around 125 to 150 thousand tokens. The exact number is debated, so check your own sessions with slash context. Look at my own usage for the last week: 74 percent of it was above 150 thousand, and a third came from sessions open for more than eight hours. That is my bad habit. One task per session, and when a task is bigger, split it and hand off with a short summary file.",
   },
 };
 
@@ -863,7 +783,7 @@ const extraSlides4: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Five rules for writing a skill. One: the description decides when the skill runs, so say when to use it and when not to. Two: write directives. Use the payments API if you work on checkout is better than a paragraph on why the payments API is recommended. Three: if the steps are always the same, do not write a skill. Write a script and tell the model to run it. Skills are for judgement. Four: delete lines that change nothing. Be thorough and write clear code do not change behaviour, and AI-written skills are full of them. Five: keep the body under 500 lines and move variants into reference files that load only when needed. I write my skills by hand. A talk at AI Engineer 2026 by Philipp Schmid argues that AI-generated skills can make results worse, and that matches what I see. The talk is linked in the notes repo.",
+    notes: "Five rules for writing a skill. One: the description decides when the skill runs, so say when to use it and when not to. Two: write short instructions. Use the payments API if you work on checkout beats a paragraph on why. Three: if the steps never change, write a script and tell Claude to run it. Skills are for judgement. Four: delete lines that change nothing, like be thorough. AI-written skills are full of them. Five: keep the body under 500 lines and move variants into reference files. I write my skills by hand. A talk at AI Engineer 2026 by Philipp Schmid argues that AI-generated skills can make results worse, which matches what I see.",
   },
   "sk-desc": {
     id: "sk-desc", steps: 2, time: "0:45",
@@ -884,7 +804,7 @@ const extraSlides4: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "The description is the part that matters most. It sits in context on every request, and it is the only thing Claude reads to decide if the skill applies. The first one tells it nothing, so the skill triggers too often or never. The second says what it does, when to use it with words I would really say, and when not to. The not-to line stops it from firing on a request to write code. Write it in the third person. Keep it short, because you pay for it on every call. If the description summarises the steps of the skill, Claude can follow the description and skip the body, so describe the trigger and leave the steps in the body.",
+    notes: "The description matters most. It sits in context on every request, and it is the only text Claude reads to decide if the skill applies. The first one tells it nothing, so the skill runs too often or never. The second says what it does, when to use it with words I would really say, and when not to. The not-to line stops it from firing on a request to write code. Keep it short, because you pay for it on every call. And describe the trigger, not the steps: if the description summarises the steps, Claude can follow it and skip the body.",
   },
   "sk-issues": {
     id: "sk-issues", steps: 5, time: "1:00",
@@ -904,7 +824,7 @@ const extraSlides4: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Five ways a skill goes wrong. It does not trigger: the user prompt is too short for Claude to see that the skill applies. In the AI Engineer talk, half the failures the speaker's team saw were wrong triggering. It triggers too often, because the description is broad, like use for web development. It works on one model or tool and not another, so test on the ones you use. It gets worse after a model update, because the world changed under it. And the AI-written skill that nobody tested: someone skims it, accepts it, and ships it. A failure is hard to diagnose, because agents are non-deterministic. The skill may be bad, the discovery may have failed, or the task may be too hard. That is why you need evals.",
+    notes: "Five ways a skill goes wrong. It does not run: the user prompt is too short for Claude to see that the skill applies. In a talk at AI Engineer 2026, half the failures the speaker's team saw were wrong triggering. It runs too often, because the description is broad, like use for web development. It works on one model and not another, so test on the ones you use. It gets worse after a model update. And the AI-written skill nobody tested. A failure is hard to diagnose because runs vary: the skill, the discovery or the task may be at fault. That is why you need tests.",
   },
   "sk-evals": {
     id: "sk-evals", steps: 4, time: "1:15",
@@ -923,12 +843,83 @@ const extraSlides4: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "How I test a skill, in four steps. One: write ten cases. A case is a realistic prompt, a flag for whether the skill should trigger, and a check. Five should trigger, and five should not. Even ten beat nothing, and real prompts from your own sessions beat invented ones. Two: run each case three to six times, because runs vary, and use a clean folder each time, because an agent can cheat by reading earlier chats. Three: check the result with a plain regex first. Did it use the right API, the right model name? That is cheap and you can run it often. For complex skills add a judge with a rubric. Four: run the same cases without the skill. If the model gets the same result without it, remove the skill. That saves tokens and upkeep. Skills that teach the model something it cannot do yet are temporary. Skills for your team's own rules last. Keep the cases after you remove a skill, so you notice if the result gets worse. A change to a skill is only worth merging if the cases improve. The source is the AI Engineer 2026 talk by Philipp Schmid, linked in the notes repo.",
+    notes: "How I test a skill, in four steps. One: write ten test prompts. Each has a prompt, a flag for whether the skill should run, and a check. Five should run the skill and five should not. Real prompts from your own sessions beat invented ones. Two: run each prompt three to six times, in a clean folder each time, because results vary and an agent can cheat by reading earlier chats. Three: check the results with simple pattern checks first. They are cheap, so you can run them often. Add a judge with a rubric only for complex results. Four: run the same prompts without the skill. If the result is the same, remove the skill. That saves tokens and upkeep. Keep the prompts, so you notice if results get worse. The source is a talk by Philipp Schmid at AI Engineer 2026, linked in the notes repo.",
   },
 };
 
 
 const extraSlides5: Record<string, SlideDef> = {
+  "d-tips": {
+    id: "d-tips", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Tips</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">Habits that keep Claude reliable</div>
+      </Slide>
+    ),
+    notes: "First, the habits. They cost nothing to start, and everything later builds on them.",
+  },
+  "d-memory": {
+    id: "d-memory", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Memory</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">What Claude knows at the start of every session</div>
+      </Slide>
+    ),
+    notes: "Those habits work best when Claude starts each session already knowing the basics about you and your project. That is memory.",
+  },
+  "d-commands": {
+    id: "d-commands", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Commands</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">How I steer Claude while it works</div>
+      </Slide>
+    ),
+    notes: "Memory covers what Claude knows. Now how I steer it while it works: modes, output styles and a few commands people skip.",
+  },
+  "d-skills": {
+    id: "d-skills", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Skills</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">How Claude does the work the way I want</div>
+      </Slide>
+    ),
+    notes: "Commands steer one session. Skills package the way I want work done, so I do not repeat myself in every prompt.",
+  },
+  "d-context": {
+    id: "d-context", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Context</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">What Claude can hold, and what it costs</div>
+      </Slide>
+    ),
+    notes: "Memory, skills and tools all take space in the context window. So let me show you what that looks like on my own machine.",
+  },
+  "d-agents": {
+    id: "d-agents", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Agents</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">Claude working on its own</div>
+      </Slide>
+    ),
+    notes: "Once you know what fills the context and what it costs, you can decide when to let Claude work without you watching. That is an agent.",
+  },
+  "d-voice": {
+    id: "d-voice", time: "0:10",
+    render: () => (
+      <Slide>
+        <Title size={128}>Voice</Title>
+        <div className="mt-8 text-[48px] text-neutral-400">Handing over a task from my phone</div>
+      </Slide>
+    ),
+    notes: "An agent is only useful if you can reach it. Voice and a chat message are how I reach mine.",
+  },
+
   vision: {
     id: "vision", steps: 4, time: "1:30",
     render: (s) => (
@@ -941,19 +932,19 @@ const extraSlides5: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "Good morning, everyone. I'm Yaroslav. Quick question first: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. That second hand is where this talk starts. I use Claude Code and AI agents every working day, and this talk shows how I set them up and why each part matters: what the agent remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. Some teams aim higher. They want a task to go in and a pull request to come out, with agents doing the planning, writing, testing and review in between. People call that a software factory. I will not talk about factories much. I mention them because a factory is built from the same parts you use by hand. If a skill is vague, ten agents run a vague skill. If memory is stale, every agent starts from the same stale notes. If a tool description is bad, every agent picks the wrong tool. So the more you automate, the more these small details matter, and if you want control over cost, quality and what gets merged, this is where you get it. It does not come from a bigger model. It comes from how you set the agent up. At the end I show one small agent, a worker that follows a skill, which I start by voice from a chat message on my phone. Everything before it is the setup that makes it work.",
+    notes: "Good morning, everyone. I'm Yaroslav. Quick question: who here asked an AI to write code this week? Keep your hand up if you let it run without watching. That is where this talk starts. I use Claude Code and AI agents every working day, and I will show you how I set them up and why each part matters: what Claude remembers, how I steer it, which skills it follows, what it holds in context, and which tools it can touch. Some teams aim higher. They want a task to go in and a pull request to come out, with agents doing the planning, writing, testing and review. People call that a software factory. I will not talk about factories much. I mention them because a factory is built from the same parts you use by hand. If a skill is vague, ten agents run a vague skill. If memory is stale, every agent starts from stale notes. So the more you automate, the more these details matter. If you want control, this is where you get it, not from a bigger model. At the end I show one small agent that I start by voice from my phone.",
   },
 };
 
 const order = [
-  "hero", "vision", "map",
-  "tip-verify", "tip-grill", "tip-worktree", "tip-pitfalls",
-  "memory", "mem-lines", "mem-pitfalls",
-  "modes", "style", "commands",
-  "which", "sk-write", "sk-desc", "sk-issues", "sk-evals",
-  "context", "cost", "usage", "smart-zone",
-  "agent-decision", "agent-fail", "live-agent", "bad-tool", "agent-skill",
-  "voice", "bot-flow", "bot-code", "bot-setup", "guardrails",
+  "hero", "vision",
+  "d-tips", "tip-verify", "tip-pitfalls",
+  "d-memory", "memory", "mem-lines", "mem-pitfalls",
+  "d-commands", "modes", "style", "commands",
+  "d-skills", "which", "sk-write", "sk-desc", "sk-issues", "sk-evals",
+  "d-context", "context", "cost", "smart-zone",
+  "d-agents", "agent-decision", "live-agent", "bad-tool", "agent-skill", "agent-fail",
+  "d-voice", "voice", "bot-flow", "bot-code", "bot-setup", "guardrails",
   "judgement", "close", "links",
 ];
 
