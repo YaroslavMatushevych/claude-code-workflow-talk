@@ -27,17 +27,6 @@ const voiceSettings = `{
   }
 }`;
 
-const terse = `---
-name: Terse
-description: Shortest useful answers
-keep-coding-instructions: true
----
-Answer first, in the first sentence.
-No greeting, no narration, no closing summary.
-Simple questions: one to three sentences.
-Full detail only for errors, failing tests,
-security risk, and destructive actions.`;
-
 const ticketSkill = `---
 name: ticket-to-pr
 description: Turn a ticket description into a draft pull
@@ -534,8 +523,6 @@ Diff stat: !\`git diff main...HEAD --stat\`
 Write a PR description: what changed, why, risks, test plan. Max 150 words. Extra focus: $ARGUMENTS`;
 
 
-const tipPipeCmd = ["$ git diff main...HEAD | claude -p \\", "    \"List the 3 biggest risks in this diff.", "     One line each, no intro.\""];
-const tipPipeOut = ["- Whitespace-only `q` (for example `\"  \"`) is not nullish.", "  It wins over `saved`, then `trim()` returns `\"\"`. The", "  saved postcode is lost."];
 const tipToyClaudeMd = "# Project\nAlways use tabs for indentation.\nUse 2-space indentation.\nWrite clean code.\nAlways write tests first.\nNever write tests for trivial functions.\nIMPORTANT: ALWAYS follow ALL rules. NEVER break any rule. IMPORTANT.";
 const tipAuditOut = ["1. Lines 2 and 3 give opposite rules. One says tabs, the", "  other says 2-space indentation. The model cannot obey", "  both.", "2. Line 7 is pressure language. It is all-caps IMPORTANT,", "  ALWAYS, NEVER, and it repeats the other rules."];
 
@@ -659,7 +646,7 @@ const extraSlides3: Record<string, SlideDef> = {
         </Swap>
       </Slide>
     ),
-    notes: "How I write a line in CLAUDE.md. A line Claude cannot check does nothing: write clean code means nothing to the model. A line it can check does work: use named exports, or run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so say what to use instead, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. And if a rule must always hold, a CLAUDE.md line is not enough. That is the hook tip from the start of the talk.",
+    notes: "How I write a line in CLAUDE.md. A line Claude cannot check does nothing: write clean code means nothing to the model. A line it can check does work: use named exports, or run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so say what to use instead, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. Next I show a command that audits your instruction files.",
   },
   "mem-pitfalls": {
     id: "mem-pitfalls", steps: 5, time: "1:00",
@@ -679,7 +666,7 @@ const extraSlides3: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Five ways memory goes wrong. The more rules you add, the less reliably Claude follows each one, so keep CLAUDE.md under 200 lines. After compact, the project CLAUDE.md is re-read from disk, but rules you gave only in chat are lost. Auto-memory grows without criteria and old notes go stale, so prune it. A script that rewrites the memory file changes what Claude does next session, so treat memory as untrusted input. And if a rule must always hold, use a hook, as in the first tips.",
+    notes: "Five ways memory goes wrong. The more rules you add, the less reliably Claude follows each one, so keep CLAUDE.md under 200 lines. After compact, the project CLAUDE.md is re-read from disk, but rules you gave only in chat are lost. Auto-memory grows without criteria and old notes go stale, so prune it. A script that rewrites the memory file changes what Claude does next session, so treat memory as untrusted input. And if a rule must always hold, use a hook. I show one next.",
   },
   "agent-fail": {
     id: "agent-fail", steps: 4, time: "1:00",
@@ -799,7 +786,7 @@ const extraSlides5: Record<string, SlideDef> = {
   "tip-hook": {
     id: "tip-hook", steps: 3, time: "0:50",
     render: (s) => (
-      <Slide chapter="Tips">
+      <Slide chapter="Memory">
         <H>{["When Claude ignores a rule, make it a hook", "Register the hook in .claude/settings.json", "I asked Claude to break the rule"][s]}</H>
         <Swap k={s}>
           {s === 0 && <Code text={tipHookScript} size={26} />}
@@ -814,7 +801,7 @@ const extraSlides5: Record<string, SlideDef> = {
   "tip-skills-cost": {
     id: "tip-skills-cost", steps: 3, time: "0:40",
     render: (s) => (
-      <Slide chapter="Tips">
+      <Slide chapter="Skills">
         <H>{["Every skill costs tokens in every session", "One more skill: about 110 more tokens", "Mark a skill manual-only and it costs nothing"][s]}</H>
         <Swap k={s}>
           {s === 0 && <Term size={36} lines={[L('$ claude -p "/context"', "p"), L("Skills                      9.8k", "h"), L("my installed skills: names and descriptions", "d")]} />}
@@ -825,23 +812,10 @@ const extraSlides5: Record<string, SlideDef> = {
     ),
     notes: "Every skill that Claude can start on its own puts its name and description into the context of every session, whether you use it or not. I tested it with one new skill with a 51-word description. The skills line in slash context went from 9.8 to 9.9 thousand tokens, and the skill is listed at about 110 tokens. Mine add up to 9.8 thousand before I type a word. If you only call a skill by hand, add disable-model-invocation true to its frontmatter. In my test the line went back to 9.8 and the skill was not listed. The docs say such a skill stays out of the context until you call it.",
   },
-  "tip-pipe": {
-    id: "tip-pipe", steps: 2, time: "0:40",
-    render: (s) => (
-      <Slide chapter="Tips">
-        <H>{s === 0 ? "Use Claude as a Unix command" : "The first of three risks it printed"}</H>
-        <Swap k={s}>
-          {s === 0 && <Term size={34} lines={tipPipeCmd.map((t) => L(t, "p"))} />}
-          {s === 1 && <Term size={30} lines={tipPipeOut.map((t) => L(t))} />}
-        </Swap>
-      </Slide>
-    ),
-    notes: "Claude Code reads standard input, so you can pipe a diff, a log or a failing test into it and get the answer back in your terminal, in a script, or in CI. This is a real run on the small demo repo from before: three risks in three lines. It caught that a value with only spaces is not null, so the saved postcode is lost. My own demo did not test that case. Add dash dash output format json and you also get the tokens and the cost, so a script can track what each run costs.",
-  },
   "tip-audit": {
     id: "tip-audit", steps: 3, time: "0:50",
     render: (s) => (
-      <Slide chapter="Tips">
+      <Slide chapter="Memory">
         <H>{["A CLAUDE.md with two problems", "Audit your instructions", "What it found"][s]}</H>
         <Swap k={s}>
           {s === 0 && <Code text={tipToyClaudeMd} size={34} />}
@@ -869,16 +843,6 @@ const extraSlides5: Record<string, SlideDef> = {
     notes: "A real run, from a throwaway repo with a branch and three commits. The skill is five lines. It runs git log and git diff stat before Claude sees the prompt, so the commits are already in context. It worked: the summary is accurate, it spots that an empty string will not fall back to the saved value, and it gives a test plan. But I wrote max 150 words in the skill, and it wrote 197. A skill can look fine and still miss a limit you set. A word count is a check you can run, so write it as a test case, and run it more than once.",
   },
 
-  "d-tips": {
-    id: "d-tips", time: "0:10",
-    render: () => (
-      <Slide>
-        <Title size={128}>Tips</Title>
-        <div className="mt-8 text-[48px] text-neutral-400">Three things I tested on my own machine</div>
-      </Slide>
-    ),
-    notes: "Three tips, and none of them is the usual advice. Each one comes from a real run on my machine, and I show the output.",
-  },
   "d-memory": {
     id: "d-memory", time: "0:10",
     render: () => (
@@ -887,7 +851,7 @@ const extraSlides5: Record<string, SlideDef> = {
         <div className="mt-8 text-[48px] text-neutral-400">What Claude knows at the start of every session</div>
       </Slide>
     ),
-    notes: "Those habits work best when Claude starts each session already knowing the basics about you and your project. That is memory.",
+    notes: "We start with memory, because everything else builds on what Claude knows at the start of every session.",
   },
   "d-commands": {
     id: "d-commands", time: "0:10",
@@ -958,10 +922,9 @@ const extraSlides5: Record<string, SlideDef> = {
 
 const order = [
   "hero", "vision",
-  "d-tips", "tip-skills-cost", "tip-pipe", "tip-audit", "tip-hook",
-  "d-memory", "memory", "mem-lines", "mem-pitfalls",
+  "d-memory", "memory", "mem-lines", "tip-audit", "mem-pitfalls", "tip-hook",
   "d-commands", "modes", "style", "commands",
-  "d-skills", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
+  "d-skills", "sk-write", "sk-desc", "tip-skills-cost", "sk-run", "sk-issues", "sk-evals",
   "d-context", "context", "cost", "smart-zone",
   "d-agents", "agent-decision", "live-agent", "bad-tool", "agent-skill", "agent-fail",
   "d-voice", "voice", "bot-flow", "bot-code", "guardrails",
