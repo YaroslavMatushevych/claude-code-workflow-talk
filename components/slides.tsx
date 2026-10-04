@@ -792,15 +792,14 @@ const extraSlides3: Record<string, SlideDef> = {
 
 const extraSlides4: Record<string, SlideDef> = {
   "sk-write": {
-    id: "sk-write", steps: 5, time: "1:00",
+    id: "sk-write", steps: 4, time: "0:50",
     render: (s) => (
       <Slide chapter="Skills">
-        <H>How to write a skill</H>
+        <H>How to write a skill: four rules</H>
         <Rows
-          size={40}
+          size={44}
           active={s}
           rows={[
-            "In the description, say when to use the skill and when not to",
             "Write short instructions, not explanations",
             "If the steps never change, use a script instead",
             "Delete lines that change nothing, like \"be thorough\"",
@@ -809,7 +808,7 @@ const extraSlides4: Record<string, SlideDef> = {
         />
       </Slide>
     ),
-    notes: "Five rules for writing a skill. One: the description decides when the skill runs, so say when to use it and when not to. Two: write short instructions. Use the payments API if you work on checkout beats a paragraph on why. Three: if the steps never change, write a script and tell Claude to run it. Skills are for judgement. Four: delete lines that change nothing, like be thorough. AI-written skills are full of them. Five: keep the body under 500 lines and move variants into reference files. I write my skills by hand. A talk at AI Engineer 2026 by Philipp Schmid argues that AI-generated skills can make results worse, which matches what I see.",
+    notes: "Four rules for writing a skill. The description gets its own slide next. One: write short instructions. Use the payments API if you work on checkout beats a paragraph on why. Two: if the steps never change, write a script and tell Claude to run it. Skills are for judgement. Three: delete lines that change nothing, like be thorough. AI-written skills are full of them. Four: keep the body under 500 lines and move variants into reference files. I write my skills by hand. A talk at AI Engineer 2026 by Philipp Schmid argues that AI-generated skills can make results worse, which matches what I see.",
   },
   "sk-desc": {
     id: "sk-desc", steps: 2, time: "0:45",
