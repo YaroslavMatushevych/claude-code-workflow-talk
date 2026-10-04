@@ -148,11 +148,12 @@ const baseSlides: SlideDef[] = [
     steps: 3,
     time: "0:45",
     render: (s) => (
-      <Slide chapter="Setup">
+      <Slide chapter="Voice">
+        <H>{["Built-in voice dictation", "A key binding removes the start delay", "Tap mode and auto-submit as the default"][s]}</H>
         <Swap k={s}>
-          {s === 0 && <Mono size={120}>/voice tap</Mono>}
-          {s === 1 && <Code text={keybindings} size={36} />}
-          {s === 2 && <Code text={voiceSettings} size={36} />}
+          {s === 0 && <Mono size={110}>/voice tap</Mono>}
+          {s === 1 && <Code text={keybindings} size={34} />}
+          {s === 2 && <Code text={voiceSettings} size={34} />}
         </Swap>
       </Slide>
     ),
@@ -165,14 +166,15 @@ const baseSlides: SlideDef[] = [
     time: "0:45",
     render: (s) => (
       <Slide chapter="Setup">
+        <H>Shift+Tab switches the permission mode</H>
         <Rows
-          size={64}
+          size={48}
           active={s}
           rows={[
-            <span key="a"><span className="font-mono text-[#d97757]">default</span> asks before it edits</span>,
-            <span key="b"><span className="font-mono text-[#d97757]">acceptEdits</span> edits without asking</span>,
-            <span key="c"><span className="font-mono text-[#d97757]">plan</span> read-only until I approve</span>,
-            <span key="d"><span className="font-mono text-[#d97757]">auto</span> a classifier reviews each action</span>,
+            <span key="a">{mono("default")} asks before it edits files</span>,
+            <span key="b">{mono("acceptEdits")} edits files without asking</span>,
+            <span key="c">{mono("plan")} only reads, until I approve the plan</span>,
+            <span key="d">{mono("auto")} a second model reviews each action</span>,
           ]}
         />
       </Slide>
@@ -186,9 +188,10 @@ const baseSlides: SlideDef[] = [
     time: "0:30",
     render: (s) => (
       <Slide chapter="Setup">
+        <H>Make answers shorter with an output style</H>
         <Swap k={s}>
-          {s === 0 && <Mono size={96}>/output-style concise</Mono>}
-          {s === 1 && <Code text={terse} size={30} />}
+          {s === 0 && <Mono size={80}>/output-style concise</Mono>}
+          {s === 1 && <Code text={terse} size={28} />}
         </Swap>
       </Slide>
     ),
@@ -201,20 +204,21 @@ const baseSlides: SlideDef[] = [
     time: "1:15",
     render: (s) => {
       const items: [string, string][] = [
-        ["/btw", "side question, never enters history"],
-        ["/rewind", "Esc Esc. back to before the mistake"],
-        ["/fork", "try another direction"],
-        ["/goal", "keep going until the condition is true"],
-        ["/batch", "plan once, fan out to worktrees"],
-        ["/code-review high --fix", "review the diff, apply the findings"],
-        ["/insights", "an HTML report on my own sessions"],
+        ["/btw", "Ask a side question without adding it to the context"],
+        ["/rewind", "Go back to before a mistake (Esc Esc)"],
+        ["/fork", "Branch the conversation to try another approach"],
+        ["/goal", "Keep working until a condition you set is true"],
+        ["/batch", "Split a big change across parallel agents"],
+        ["/code-review high --fix", "Review the diff and fix what it finds"],
+        ["/insights", "A report on how you use Claude Code"],
       ];
       const [cmd, gloss] = items[s];
       return (
-        <Slide chapter="Setup">
+        <Slide chapter="Commands">
+          <H>Commands worth knowing</H>
           <Swap k={s}>
-            <div className="font-mono text-[#d97757]" style={{ fontSize: 96 }}>{cmd}</div>
-            <div className="mt-6 text-[44px] text-neutral-300">{gloss}</div>
+            <div className="font-mono text-[#d97757]" style={{ fontSize: 88 }}>{cmd}</div>
+            <div className="mt-6 text-[48px] text-neutral-300">{gloss}</div>
           </Swap>
         </Slide>
       );
@@ -228,8 +232,9 @@ const baseSlides: SlideDef[] = [
     time: "0:45",
     render: (s) => (
       <Slide chapter="Context">
+        <H>{s === 0 ? "What is in the context before I type" : "Skill descriptions alone take 9.8k tokens"}</H>
         <Term
-          size={30}
+          size={28}
           lines={[
             L('$ claude -p "/context"', "p"),
             L("Model: claude-sonnet-5-5"),
@@ -254,6 +259,7 @@ const baseSlides: SlideDef[] = [
     time: "1:15",
     render: (s) => (
       <Slide chapter="Context">
+        <H>{["One short prompt, run on Haiku", "The same prompt on three models", "A second run on Sonnet costs less"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
             <Term
@@ -272,11 +278,11 @@ const baseSlides: SlideDef[] = [
             <Term
               size={36}
               lines={[
-                L("same prompt, cold cache", "d"),
+                L("model    tokens written to cache    cost", "d"),
                 L(""),
-                L("haiku    24,471 tokens    $0.050"),
-                L("sonnet   27,347 tokens    $0.109"),
-                L("opus     27,532 tokens    $0.220", "h"),
+                L("haiku    24,471                     $0.050"),
+                L("sonnet   27,347                     $0.109"),
+                L("opus     27,532                     $0.220", "h"),
               ]}
             />
           )}
@@ -284,8 +290,6 @@ const baseSlides: SlideDef[] = [
             <Term
               size={36}
               lines={[
-                L("sonnet, second run", "d"),
-                L(""),
                 L("cache_read      12,529 tokens"),
                 L("total_cost_usd  0.0624", "h"),
               ]}
@@ -303,6 +307,7 @@ const baseSlides: SlideDef[] = [
     time: "0:30",
     render: (s) => (
       <Slide chapter="Context">
+        <H>{s === 0 ? "My last 24 hours" : "My last 7 days"}</H>
         <Swap k={s}>
           {s === 0 && (
             <Term
@@ -336,7 +341,8 @@ const baseSlides: SlideDef[] = [
     steps: 2,
     time: "0:45",
     render: (s) => (
-      <Slide chapter="Context">
+      <Slide chapter="Memory">
+        <H>{s === 0 ? "My auto-memory index" : "Only the first 200 lines of the index load at session start"}</H>
         <Swap k={s}>
           {s === 0 && (
             <Term
@@ -365,15 +371,16 @@ const baseSlides: SlideDef[] = [
     time: "0:45",
     render: (s) => (
       <Slide chapter="Skills">
+        <H>Where does an instruction belong?</H>
         <Rows
-          size={60}
+          size={46}
           active={s}
           rows={[
-            <span key="a">Always <span className="font-normal text-neutral-400">→</span> <span className="font-mono">CLAUDE.md</span></span>,
-            <span key="b">Sometimes <span className="font-normal text-neutral-400">→</span> <span className="font-mono">skill</span></span>,
-            <span key="c">Every time <span className="font-normal text-neutral-400">→</span> <span className="font-mono">hook</span></span>,
-            <span key="d">Noisy side task <span className="font-normal text-neutral-400">→</span> <span className="font-mono">subagent</span></span>,
-            <span key="e">External system <span className="font-mono">→ MCP</span></span>,
+            <span key="a">A rule that always applies: {mono("CLAUDE.md")}</span>,
+            <span key="b">A procedure I need sometimes: {mono("skill")}</span>,
+            <span key="c">Something that must happen every time: {mono("hook")}</span>,
+            <span key="d">A noisy side task: {mono("subagent")}</span>,
+            <span key="e">Access to another system: {mono("MCP")}</span>,
           ]}
         />
       </Slide>
@@ -387,13 +394,14 @@ const baseSlides: SlideDef[] = [
     time: "0:45",
     render: (s) => (
       <Slide chapter="Agents">
+        <H>Do you need an agent?</H>
         <Rows
-          size={68}
+          size={44}
           active={s}
           rows={[
-            "Steps known in advance → workflow",
-            "Success is checkable → agent",
-            "Agents cost 4×. Teams of agents 15×.",
+            "If you know the steps in advance, write a workflow",
+            "If you cannot, and you can check the result, use an agent",
+            "An agent uses about 4× the tokens of a chat. A team of agents, about 15×.",
           ]}
         />
       </Slide>
@@ -407,11 +415,12 @@ const baseSlides: SlideDef[] = [
     time: "3:00",
     render: (s) => (
       <Slide chapter="Agents">
+        <H>{["A tool: a name, a description, and inputs", "A function that runs the tool", "A loop: ask Claude, run the tool it picks", "Send the tool result back to Claude"][s]}</H>
         <Swap k={s}>
-          {s === 0 && <Code text={agentTools} size={25} />}
-          {s === 1 && <Code text={agentRun} size={34} />}
-          {s === 2 && <Code text={agentLoop} size={30} />}
-          {s === 3 && <Code text={agentResults} size={34} />}
+          {s === 0 && <Code text={agentTools} size={24} />}
+          {s === 1 && <Code text={agentRun} size={32} />}
+          {s === 2 && <Code text={agentLoop} size={28} />}
+          {s === 3 && <Code text={agentResults} size={32} />}
         </Swap>
       </Slide>
     ),
@@ -424,9 +433,10 @@ const baseSlides: SlideDef[] = [
     time: "1:15",
     render: (s) => (
       <Slide chapter="Agents">
+        <H>{["A bad tool description", "A good tool description", "Two questions to test both"][s]}</H>
         <Swap k={s}>
-          {s === 0 && <Code text={badTool} size={36} />}
-          {s === 1 && <Code text={goodTool} size={28} />}
+          {s === 0 && <Code text={badTool} size={34} />}
+          {s === 1 && <Code text={goodTool} size={26} />}
           {s === 2 && (
             <Term
               size={44}
@@ -448,16 +458,17 @@ const baseSlides: SlideDef[] = [
     steps: 5,
     time: "0:30",
     render: (s) => (
-      <Slide chapter="Swarm">
+      <Slide chapter="Voice">
+        <H>Guardrails for work I am not watching</H>
         <Rows
-          size={64}
+          size={44}
           active={s}
           rows={[
-            "One chat ID can send work",
-            "Draft PRs only",
-            "Branch protection on main",
-            "Messages and tickets are untrusted text",
-            "Budget cap on every run",
+            "Only my chat ID can send work",
+            "Claude can only open draft pull requests",
+            "Main is protected, so nothing can be pushed there",
+            "Task text and tickets are untrusted input",
+            "Every run has a budget cap",
           ]}
         />
       </Slide>
@@ -471,7 +482,8 @@ const baseSlides: SlideDef[] = [
     time: "0:30",
     render: (s) => (
       <Slide chapter="Judgement">
-        <Rows size={96} active={s} rows={["Read every diff", "Check the tests it wrote", "I press merge"]} />
+        <H>What I still do myself</H>
+        <Rows size={72} active={s} rows={["I read every diff", "I check the tests Claude wrote", "I decide what to merge"]} />
       </Slide>
     ),
     notes:
@@ -484,9 +496,14 @@ const baseSlides: SlideDef[] = [
     render: (s) => (
       <Slide>
         <Swap k={s}>
-          {s === 0 && <Mono size={96}>/context</Mono>}
-          {s === 1 && <Mono size={96}>/output-style concise</Mono>}
-          {s === 2 && <Mono size={96}>one skill</Mono>}
+          {s < 3 && (
+            <>
+              <H>Three things to try tomorrow</H>
+              <div className="text-[64px] font-bold leading-tight max-w-[1500px]">
+                {["Run /context and see what loads before you type", "Switch to /output-style concise", "Write one skill for something you paste every week"][s]}
+              </div>
+            </>
+          )}
           {s === 3 && <Title size={112}>Thank you</Title>}
         </Swap>
       </Slide>
@@ -562,6 +579,22 @@ skills:
 Follow the preloaded ticket-to-pr skill.
 Report the pull request link and a 3-line summary.`;
 
+
+const H = ({ children }: { children: ReactNode }) => (
+  <div className="mb-10">
+    <Title size={52}>{children}</Title>
+  </div>
+);
+
+const Two = ({ main, fix }: { main: ReactNode; fix: ReactNode }) => (
+  <span>
+    {main}
+    <span className="block mt-1 text-[0.58em] font-normal">{fix}</span>
+  </span>
+);
+
+const mono = (t: string) => <span className="font-mono text-[#d97757]">{t}</span>;
+
 const dim = (t: string) => <span className="font-mono text-[28px] font-normal text-neutral-600">  {t}</span>;
 
 const extraSlides: Record<string, SlideDef> = {
@@ -572,8 +605,9 @@ const extraSlides2: Record<string, SlideDef> = {
     id: "links", time: "0:30",
     render: () => (
       <Slide>
+        <H>Everything from this talk is on GitHub</H>
         <Term
-          size={44}
+          size={40}
           lines={[
             L("github.com/YaroslavMatushevych/", "d"),
             L(""),
@@ -593,20 +627,21 @@ const extraSlides2: Record<string, SlideDef> = {
     id: "agent-skill", steps: 3, time: "1:30",
     render: (s) => (
       <Slide chapter="Agents">
+        <H>An agent has a role. A skill gives it a procedure.</H>
         <Swap k={s}>
           {s === 0 && (
             <Rows
-              size={72}
+              size={60}
               active={1}
               rows={[
-                <span key="a">planner{dim("writes the plan")}</span>,
-                <span key="b">worker{dim("writes the code")}</span>,
-                <span key="c">reviewer{dim("reads the diff")}</span>,
+                "Planner: writes the plan",
+                "Worker: writes the code",
+                "Reviewer: reads the diff",
               ]}
             />
           )}
-          {s === 1 && <Code text={workerAgent} size={30} />}
-          {s === 2 && <Code text={ticketSkill} size={26} />}
+          {s === 1 && <Code text={workerAgent} size={26} />}
+          {s === 2 && <Code text={ticketSkill} size={24} />}
         </Swap>
       </Slide>
     ),
@@ -616,16 +651,17 @@ const extraSlides2: Record<string, SlideDef> = {
     id: "bot-flow", steps: 6, time: "1:00",
     render: (s) => (
       <Slide chapter="Voice">
+        <H>From my phone to a draft PR</H>
         <Rows
-          size={60}
+          size={46}
           active={s}
           rows={[
-            "Dictate on my phone",
-            "Telegram message",
-            "Bot on my laptop",
-            <span key="d"><span className="font-mono">claude -p</span> in my repo</span>,
-            "Worker agent with my skill",
-            "Draft PR and a reply",
+            "I dictate a message on my phone",
+            "It arrives in a Telegram chat with my bot",
+            "The bot on my laptop receives it",
+            <span key="d">The bot runs {mono("claude -p")} in my repo</span>,
+            "The worker agent follows my skill",
+            "I get a draft pull request and a reply",
           ]}
         />
       </Slide>
@@ -636,10 +672,11 @@ const extraSlides2: Record<string, SlideDef> = {
     id: "bot-code", steps: 3, time: "1:15",
     render: (s) => (
       <Slide chapter="Voice">
+        <H>{["Settings and a helper for the Telegram API", "Run Claude Code for each message", "Listen for messages, only from my chat"][s]}</H>
         <Swap k={s}>
-          {s === 0 && <Code text={botConfig} size={28} />}
-          {s === 1 && <Code text={botRun} size={26} />}
-          {s === 2 && <Code text={botLoop} size={30} />}
+          {s === 0 && <Code text={botConfig} size={26} />}
+          {s === 1 && <Code text={botRun} size={22} />}
+          {s === 2 && <Code text={botLoop} size={28} />}
         </Swap>
       </Slide>
     ),
@@ -649,14 +686,15 @@ const extraSlides2: Record<string, SlideDef> = {
     id: "bot-setup", steps: 4, time: "0:45",
     render: (s) => (
       <Slide chapter="Voice">
+        <H>Set it up in four steps</H>
         <Rows
-          size={52}
+          size={44}
           active={s}
           rows={[
-            <span key="a"><span className="font-mono">@BotFather</span>{dim("/newbot, copy the token")}</span>,
-            <span key="b">Message your bot{dim("read your chat ID")}</span>,
-            <span key="c"><span className="font-mono">node bot.mjs</span></span>,
-            <span key="d"><span className="font-mono">gh auth status</span>{dim("the right account")}</span>,
+            <span key="a">In Telegram, message {mono("@BotFather")}, run {mono("/newbot")}, copy the token</span>,
+            "Send your bot a message and read your chat ID",
+            <span key="c">Run {mono("node bot.mjs")}</span>,
+            <span key="d">Check that {mono("gh")} is logged in to the right account</span>,
           ]}
         />
       </Slide>
@@ -671,9 +709,10 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "tip-verify", steps: 2, time: "0:45",
     render: (s) => (
       <Slide chapter="Tips">
+        <H>Give Claude a way to check its own work</H>
         <Swap k={s}>
-          {s === 0 && (<><Mono size={64}>/goal all tests in test/auth pass</Mono><Mono size={64}>and the lint step is clean</Mono></>)}
-          {s === 1 && <Title size={80}>A Stop hook blocks the turn until the check passes</Title>}
+          {s === 0 && (<><Mono size={58}>/goal all tests in test/auth pass</Mono><Mono size={58}>and the lint step is clean</Mono></>)}
+          {s === 1 && <div className="text-[60px] font-bold leading-tight">A Stop hook stops Claude from finishing until the check passes.</div>}
         </Swap>
       </Slide>
     ),
@@ -683,7 +722,9 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "tip-grill", time: "0:30",
     render: () => (
       <Slide chapter="Tips">
-        <Title size={84}>Make it interview you before it opens a PR</Title>
+        <H>Ask Claude to question you before it opens a PR</H>
+        <Mono size={48}>Grill me on these changes.</Mono>
+        <Mono size={48}>Do not open a PR until I pass.</Mono>
       </Slide>
     ),
     notes: "I use a prompt like: grill me on these changes, and do not open a PR until I pass. Claude asks the questions I skipped. It finds the gaps in my own thinking before it writes code, and that is cheaper than finding them in review.",
@@ -692,9 +733,10 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "tip-worktree", steps: 2, time: "0:30",
     render: (s) => (
       <Slide chapter="Tips">
+        <H>{s === 0 ? "Run parallel sessions in separate worktrees" : "Give an agent its own worktree"}</H>
         <Swap k={s}>
-          {s === 0 && <Term size={44} lines={[L("$ claude --worktree feature-auth", "p"), L("$ claude -w fix-postcode --tmux", "p")]} />}
-          {s === 1 && <Code text={"---\nname: worker\nisolation: worktree\n---"} size={48} />}
+          {s === 0 && <Term size={42} lines={[L("$ claude --worktree feature-auth", "p"), L("$ claude -w fix-postcode --tmux", "p")]} />}
+          {s === 1 && <Code text={"---\nname: worker\nisolation: worktree\n---"} size={44} />}
         </Swap>
       </Slide>
     ),
@@ -704,15 +746,16 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "tip-pitfalls", steps: 5, time: "0:45",
     render: (s) => (
       <Slide chapter="Tips">
+        <H>Five mistakes, and what I do instead</H>
         <Rows
-          size={52}
+          size={40}
           active={s}
           rows={[
-            <span key="a">One session, many tasks{dim("/clear")}</span>,
-            <span key="b">Correcting again and again{dim("/clear after two")}</span>,
-            <span key="c">A reviewer told to find gaps{dim("it always finds some")}</span>,
-            <span key="d">Plausible code{dim("ask for evidence")}</span>,
-            <span key="e">Skip permissions on a real machine{dim("container or sandbox")}</span>,
+            <Two key="a" main="Many tasks in one session" fix="Start fresh with /clear" />,
+            <Two key="b" main="Correcting Claude again and again" fix="After two tries, /clear and write a better prompt" />,
+            <Two key="c" main="Telling a reviewer to find problems" fix="It always finds some. Ask only for real bugs." />,
+            <Two key="d" main="Code that looks right" fix="Ask for the test output as proof" />,
+            <Two key="e" main="Skipping permission prompts on a real machine" fix="Use a container or the sandbox" />,
           ]}
         />
       </Slide>
@@ -723,9 +766,10 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "mem-lines", steps: 3, time: "0:45",
     render: (s) => (
       <Slide chapter="Memory">
+        <H>{["Write lines Claude can check", "Say what to use instead", "Use a linter for what a linter can check"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
-            <Term size={44} lines={[L("✗ Write clean code", "d"), L(""), L("✓ Use named exports", "h"), L("✓ Run `pnpm test <file>` before saying done", "h")]} />
+            <Term size={40} lines={[L("✗ Write clean code", "d"), L(""), L("✓ Use named exports", "h"), L("✓ Run `pnpm test <file>` before saying done", "h")]} />
           )}
           {s === 1 && (
             <Term size={40} lines={[
@@ -734,7 +778,7 @@ const extraSlides3: Record<string, SlideDef> = {
               L("✓ Use date-fns. Helpers are in docs/dates.md.", "h"),
             ]} />
           )}
-          {s === 2 && <Title size={84}>If a linter can check it, use the linter.</Title>}
+          {s === 2 && <div className="text-[64px] font-bold leading-tight">A prompt line only asks. A linter enforces.</div>}
         </Swap>
       </Slide>
     ),
@@ -744,15 +788,16 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "mem-pitfalls", steps: 5, time: "1:00",
     render: (s) => (
       <Slide chapter="Memory">
+        <H>How memory goes wrong</H>
         <Rows
-          size={56}
+          size={44}
           active={s}
           rows={[
-            "More instructions, less adherence",
-            "Lost after /compact",
-            "Stale memory piles up",
-            "Poisoned memory",
-            <span key="e">Ignored?{dim("make it a hook")}</span>,
+            "The more rules you add, the less Claude follows each one",
+            "Rules you gave only in chat are lost after /compact",
+            "Old notes go stale and mislead Claude",
+            "A script can rewrite the memory file, so treat it as untrusted",
+            "If a rule must always hold, use a hook",
           ]}
         />
       </Slide>
@@ -763,11 +808,12 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "agent-fail", steps: 4, time: "1:00",
     render: (s) => (
       <Slide chapter="Agents">
+        <H>What goes wrong with parallel agents</H>
         <Swap k={s}>
-          {s === 0 && <Title size={96}>Review is the bottleneck.</Title>}
-          {s === 1 && <Title size={80}>Two agents editing one file overwrite each other.</Title>}
-          {s === 2 && <Title size={80}>Idle agents keep burning tokens.</Title>}
-          {s === 3 && (<><Big size={200}>15×</Big><Mono size={36} dim>tokens, multi-agent vs chat</Mono></>)}
+          {s === 0 && <div className="text-[72px] font-bold leading-tight">You still have to review every result.</div>}
+          {s === 1 && <div className="text-[72px] font-bold leading-tight">Two agents editing the same file overwrite each other.</div>}
+          {s === 2 && <div className="text-[72px] font-bold leading-tight">Idle agents keep using tokens until you stop them.</div>}
+          {s === 3 && (<><Big size={190}>15×</Big><Mono size={34} dim>the tokens of a normal chat, for a team of agents</Mono></>)}
         </Swap>
       </Slide>
     ),
@@ -777,9 +823,10 @@ const extraSlides3: Record<string, SlideDef> = {
     id: "smart-zone", steps: 2, time: "0:45",
     render: (s) => (
       <Slide chapter="Context">
+        <H>{s === 0 ? "Answers get worse in a long session" : "Clear or compact before the session gets long"}</H>
         <Swap k={s}>
-          {s === 0 && (<><Big size={180}>125K–150K</Big><Mono size={36} dim>where quality starts to drop</Mono></>)}
-          {s === 1 && <Title size={80}>Clear or compact before the session bloats.</Title>}
+          {s === 0 && (<><Big size={170}>125K–150K</Big><Mono size={34} dim>tokens of context: where quality starts to drop</Mono></>)}
+          {s === 1 && <div className="text-[60px] font-bold leading-tight">One task per session. Hand off with a short summary file.</div>}
         </Swap>
       </Slide>
     ),
@@ -793,15 +840,16 @@ const extraSlides4: Record<string, SlideDef> = {
     id: "sk-write", steps: 5, time: "1:00",
     render: (s) => (
       <Slide chapter="Skills">
+        <H>How to write a skill</H>
         <Rows
-          size={52}
+          size={40}
           active={s}
           rows={[
-            "The description says when, and when not",
-            "Directives, not essays",
-            "Fixed steps go in a script",
-            "Delete lines that change nothing",
-            "Under 500 lines, details in files",
+            "In the description, say when to use the skill and when not to",
+            "Write short instructions, not explanations",
+            "If the steps never change, use a script instead",
+            "Delete lines that change nothing, like \"be thorough\"",
+            "Keep it under 500 lines and move details to other files",
           ]}
         />
       </Slide>
@@ -812,11 +860,12 @@ const extraSlides4: Record<string, SlideDef> = {
     id: "sk-desc", steps: 2, time: "0:45",
     render: (s) => (
       <Slide chapter="Skills">
+        <H>{s === 0 ? "A vague description" : "A description that works"}</H>
         <Swap k={s}>
-          {s === 0 && <Code text={`description: Helps with documents`} size={48} />}
+          {s === 0 && <Code text={`description: Helps with documents`} size={46} />}
           {s === 1 && (
             <Code
-              size={36}
+              size={34}
               text={`description: Reviews a pull request for bugs,
   missing tests and security issues. Use when the
   user asks to review a PR or says "review #123".
@@ -832,15 +881,16 @@ const extraSlides4: Record<string, SlideDef> = {
     id: "sk-issues", steps: 5, time: "1:00",
     render: (s) => (
       <Slide chapter="Skills">
+        <H>How skills fail</H>
         <Rows
-          size={56}
+          size={46}
           active={s}
           rows={[
-            "Does not trigger",
-            "Triggers too often",
-            "Works on one model, not on another",
-            "Gets worse after a model update",
-            "AI-written and never tested",
+            "It does not run when it should",
+            "It runs when it should not",
+            "It works on one model but not on another",
+            "It gets worse after a model update",
+            "Nobody tested it, because an AI wrote it",
           ]}
         />
       </Slide>
@@ -851,11 +901,16 @@ const extraSlides4: Record<string, SlideDef> = {
     id: "sk-evals", steps: 4, time: "1:15",
     render: (s) => (
       <Slide chapter="Skills">
+        <H>Test a skill before you trust it</H>
         <Swap k={s}>
-          {s === 0 && <Title size={84}>5 cases that should trigger. 5 that should not.</Title>}
-          {s === 1 && <Title size={84}>Run each case 3 to 6 times, in a clean folder.</Title>}
-          {s === 2 && <Title size={84}>Check with a regex first. Add a judge for the rest.</Title>}
-          {s === 3 && <Title size={84}>Same result without the skill? Remove it.</Title>}
+          <div className="text-[64px] font-bold leading-tight max-w-[1500px]">
+            {[
+              "Write 10 test prompts: 5 where the skill should run and 5 where it should not",
+              "Run each prompt 3 to 6 times, each time in a clean folder",
+              "Check the results with simple pattern checks, then add a judge for the rest",
+              "Run the same prompts without the skill. Same result? Remove the skill.",
+            ][s]}
+          </div>
         </Swap>
       </Slide>
     ),

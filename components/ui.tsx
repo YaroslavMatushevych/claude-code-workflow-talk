@@ -95,7 +95,7 @@ export function Rows({ rows, active, size = 56 }: { rows: ReactNode[]; active: n
       {rows.map((r, i) => (
         <div
           key={i}
-          style={{ fontSize: size, color: i === active ? "#fafafa" : "#2e2e2e" }}
+          style={{ fontSize: size, color: i === active ? "#fafafa" : "#5c5c5c" }}
           className="font-bold tracking-tight transition-colors duration-300"
         >
           {r}
