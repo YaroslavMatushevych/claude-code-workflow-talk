@@ -294,7 +294,7 @@ const baseSlides: SlideDef[] = [
     time: "0:40",
     render: (s) => (
       <Slide chapter="Memory">
-        <H>{["Claude reads two kinds of memory at session start", "Auto-memory: the notes Claude keeps about me", "Only the first 200 lines of that index load"][s]}</H>
+        <H>{["Claude reads two kinds of memory at session start", "Auto-memory: MEMORY.md is the index of notes Claude keeps about me", "Only the first 200 lines of MEMORY.md load at session start"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
             <Rows
@@ -320,11 +320,22 @@ const baseSlides: SlideDef[] = [
               ]}
             />
           )}
-          {s === 2 && <Big>200 lines</Big>}
+          {s === 2 && (
+            <Term
+              size={30}
+              lines={[
+                L("~/.claude/projects/<project>/memory/", "p"),
+                L(""),
+                L("  MEMORY.md       the index: first 200 lines or 25KB load", "h"),
+                L("  feedback_*.md   topic files with the details"),
+                L("  project_*.md"),
+              ]}
+            />
+          )}
         </Swap>
       </Slide>
     ),
-    notes: "Claude reads two kinds of memory at the start of every session. CLAUDE.md, which I write, and auto-memory, which Claude writes. I will not explain CLAUDE.md, you know it. Auto-memory lives in a folder per project: an index file and one file per fact. This is the index from my setup, 22 files. Each line points to a topic file. Only the first 200 lines or 25 kilobytes of the index load at the start, and topic files load on demand. Memory is context, not enforcement. If something must happen every time, use a hook.",
+    notes: "Claude reads two kinds of memory at the start of every session. CLAUDE.md, which I write, and auto-memory, which Claude writes. I will not explain CLAUDE.md, you know it. Auto-memory lives in a folder per project: an index file and one file per fact. This is the index from my setup, 22 files. Each line points to a topic file. The docs say the first 200 lines of MEMORY.md, or the first 25 kilobytes, whichever comes first, load at the start of every conversation. Anything beyond that is not loaded at session start, and Claude keeps the index short by moving details into topic files. Memory is context, not enforcement. If something must happen every time, use a hook.",
   },
   {
     id: "which",
@@ -451,7 +462,7 @@ const baseSlides: SlideDef[] = [
   {
     id: "close",
     steps: 4,
-    time: "0:40",
+    time: "0:35",
     render: (s) => (
       <Slide>
         <Swap k={s}>
@@ -686,34 +697,47 @@ const extraSlides3: Record<string, SlideDef> = {
       <Slide chapter="Tips">
         <H>Give Claude a way to check its own work</H>
         <Swap k={s}>
-          {s === 0 && (<><Mono size={58}>/goal all tests in test/auth pass</Mono><Mono size={58}>and the lint step is clean</Mono></>)}
+          {s === 0 && (<><Mono size={54}>Fix the postcode bug.</Mono><Mono size={54}>Run `pnpm test` and show me the output.</Mono></>)}
           {s === 1 && <div className="text-[60px] font-bold leading-tight">A Stop hook stops Claude from finishing until the check passes.</div>}
         </Swap>
       </Slide>
     ),
-    notes: "First tip: give Claude a way to check its own work. The goal command does it. You state a condition, like all tests in this folder pass and lint is clean, and Claude keeps working until it is true. For a hard guarantee, use a Stop hook: it blocks the turn from ending until your check passes. A hook is code, so it enforces. CLAUDE.md only asks. I ask for evidence in every prompt: run the tests and show me the output.",
+    notes: "First tip: give Claude a way to check its own work, and ask for the proof. In many of my prompts I add one line: run the tests and show me the output. For a hard guarantee, use a Stop hook. It blocks Claude from finishing until your check passes. A hook is code, so it enforces. CLAUDE.md only asks. The goal command does something similar, and it is in the commands section.",
   },
   "mem-lines": {
     id: "mem-lines", steps: 3, time: "0:45",
     render: (s) => (
       <Slide chapter="Memory">
-        <H>{["CLAUDE.md: write lines Claude can check", "CLAUDE.md: say what to use instead", "CLAUDE.md: leave to a linter what a linter can check"][s]}</H>
+        <H>{["A good CLAUDE.md line is specific enough to check", "Say what to use, not only what to avoid", "If ESLint can check a rule, put it in ESLint"][s]}</H>
         <Swap k={s}>
           {s === 0 && (
-            <Term size={40} lines={[L("✗ Write clean code", "d"), L(""), L("✓ Use named exports", "h"), L("✓ Run `pnpm test <file>` before saying done", "h")]} />
+            <Term size={40} lines={[
+              L("Bad:   Write clean code", "d"),
+              L(""),
+              L("Good:  Use named exports.", "h"),
+              L("Good:  Run `pnpm test <file>` before saying done.", "h"),
+            ]} />
           )}
           {s === 1 && (
             <Term size={40} lines={[
-              L("✗ Never use moment.js.", "d"),
+              L("Bad:   Never use moment.js.", "d"),
               L(""),
-              L("✓ Use date-fns. Helpers are in docs/dates.md.", "h"),
+              L("Good:  Use date-fns. Helpers are in docs/dates.md.", "h"),
             ]} />
           )}
-          {s === 2 && <div className="text-[64px] font-bold leading-tight">A prompt line only asks. A linter enforces.</div>}
+          {s === 2 && (
+            <Term size={40} lines={[
+              L("CLAUDE.md:    Use named exports.", "d"),
+              L("               Claude can forget it.", "d"),
+              L(""),
+              L("ESLint rule:  import/no-default-export", "h"),
+              L("               The lint step fails when Claude forgets.", "h"),
+            ]} />
+          )}
         </Swap>
       </Slide>
     ),
-    notes: "How I write a line in CLAUDE.md. Vague lines do nothing: write clean code means nothing to the model. A line it can check does work: use named exports, run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so give the alternative, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. Third: if a linter or a test can check a rule, use the linter. A prompt line only asks.",
+    notes: "How I write a line in CLAUDE.md. A line Claude cannot check does nothing: write clean code means nothing to the model. A line it can check does work: use named exports, or run this test command before you say done. Second: a rule that only says never do X leaves Claude stuck, so say what to use instead, or point to a doc and say when to read it. Do not embed the doc with an at-sign, because imports load at launch and cost context. Third: if ESLint can check a rule, put it in ESLint, for example the import no-default-export rule for named exports. A CLAUDE.md line only asks, and Claude can forget it. A lint rule fails the lint step. Add a hook that runs ESLint after each edit, and Claude sees the failure right away.",
   },
   "mem-pitfalls": {
     id: "mem-pitfalls", steps: 5, time: "1:00",
@@ -851,6 +875,29 @@ const extraSlides4: Record<string, SlideDef> = {
 
 
 const extraSlides5: Record<string, SlideDef> = {
+  "tip-grill": {
+    id: "tip-grill", time: "0:25",
+    render: () => (
+      <Slide chapter="Tips">
+        <H>Ask Claude to question you before it opens a PR</H>
+        <Mono size={48}>Grill me on these changes.</Mono>
+        <Mono size={48}>Do not open a PR until I pass.</Mono>
+      </Slide>
+    ),
+    notes: "Second tip. I use a prompt like: grill me on these changes, and do not open a PR until I pass. Claude asks the questions I skipped. It finds gaps in my own thinking before it writes code, and that is cheaper than finding them in review.",
+  },
+  "tip-review": {
+    id: "tip-review", time: "0:25",
+    render: () => (
+      <Slide chapter="Tips">
+        <H>Review the diff in a fresh session</H>
+        <Mono size={48}>Review this diff against PLAN.md.</Mono>
+        <Mono size={48}>Report bugs and missing requirements only.</Mono>
+      </Slide>
+    ),
+    notes: "Third tip. A second Claude with no memory of writing the code reads the diff against the plan and reports gaps. It does not defend decisions it did not make. Tell it to report real bugs and missing requirements only, or a reviewer told to find problems will always find something, and you end up adding code you did not need.",
+  },
+
   "sk-run": {
     id: "sk-run", steps: 3, time: "0:50",
     render: (s) => (
@@ -955,7 +1002,7 @@ const extraSlides5: Record<string, SlideDef> = {
 
 const order = [
   "hero", "vision",
-  "d-tips", "tip-verify",
+  "d-tips", "tip-verify", "tip-grill", "tip-review",
   "d-memory", "memory", "mem-lines", "mem-pitfalls",
   "d-commands", "modes", "style", "commands",
   "d-skills", "which", "sk-write", "sk-desc", "sk-run", "sk-issues", "sk-evals",
